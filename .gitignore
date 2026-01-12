@@ -1,0 +1,13 @@
+# Archivos de build y distribución
+build/
+dist/
+
+# Configuración privada de NetBeans
+nbproject/private/
+
+# Archivos generados específicos
+web/WEB-INF/glassfish-web.xml
+
+# Archivos temporales del sistema o del editor
+*.log
+*.tmp

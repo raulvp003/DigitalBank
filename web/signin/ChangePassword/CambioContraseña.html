@@ -1,0 +1,56 @@
+<!DOCTYPE html> 
+<html>
+    <head>
+        <title>Reset Password</title> <!-- Tab title -->
+        <meta charset="UTF-8"> <!-- Allows accents and ñ -->
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- Mobile screen adjustment -->
+        <link rel="icon" type="image/png" href="../../logo.png"> <!-- Browser icon -->
+        <link rel="stylesheet" href="CSSlogin.css"> <!-- CSS file -->
+        <link rel="stylesheet" href="../../darkMode.css"><!-- Alternative CSS file. Dark mode. -->
+        <script type="text/javascript" src="../../darkMode.js" defer></script><!-- Alternative JS file. Dark mode. -->
+        <script type="text/javascript" src="CCjs.js" defer></script> <!-- External JS file (executes at the end) -->
+        
+
+    </head>
+
+    <body>
+        <img id="darkModeToggle" src="../../moon.png" alt="dark mode">
+
+        <div>
+            <img id="logo" src="../../logo.png" onclick="window.open('../main.html', '_blank');"> <!-- Logo that opens main -->
+        </div>
+
+        <div id="form"> <!-- Main container for the form -->
+            <h1 id="titulo">Change Password</h1> <!-- Page title -->
+
+            <form id="signInForm" method="GET" action="/CRUDBankServerSide/webresources/customer/sigin/"> <!-- Form with GET method -->
+                
+                <div class="password-container"> <!-- First field container -->
+                    <input type="password" name="oldPassword" id="oldPassword" placeholder="Current Password"> <!-- Input for current password -->
+                    <img src="https://cdn-icons-png.flaticon.com/128/159/159604.png" alt="Show password" id="toggleOldPassword"
+                         onclick="EyeSwap('oldPassword', 'toggleOldPassword')"> <!-- Eye icon to toggle show/hide -->
+                </div>
+
+                <br> 
+
+                <div class="password-container"> <!-- Second field container -->
+                    <input type="password" name="nuevaPassword" id="nuevaPassword" placeholder="New Password"> <!-- Input for new password -->
+                    <img src="https://cdn-icons-png.flaticon.com/128/159/159604.png" alt="Show password" id="toggleNewPassword" 
+                         onclick="EyeSwap('nuevaPassword', 'toggleNewPassword')"> <!-- Eye icon to toggle show/hide -->
+                </div>
+
+                <div class="password-container"> <!-- Third field container -->
+                    <input type="password" name="confirmPassword" id="confirmPassword" placeholder="Confirm Password"> <!-- Input to confirm password -->
+                    <img src="https://cdn-icons-png.flaticon.com/128/159/159604.png" alt="Show password" id="toggleConfPassword"
+                         onclick="EyeSwap('confirmPassword', 'toggleConfPassword')"> <!-- Eye icon to toggle show/hide -->
+                </div>
+
+                <div id="cAlerta" style="display:none; margin-top:10px;"></div> <!-- Hidden message (for alerts or errors) -->
+
+                <button type="submit" onclick="BOnClick(event);">Change Password</button> <!-- Button that executes JS function on click -->
+            </form>
+        </div>
+    </body>
+</html>
+
+

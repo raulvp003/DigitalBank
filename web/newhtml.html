@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<html>
+    <head>
+        <title>Restablecer contraseña</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="icon" type="image/png" href="logo.png">
+        <link rel="stylesheet" href="CSSlogin.css">
+        <script type="text/javascript">
+            function BOnClick(){
+                
+                const tfEmail=document.getElementById("oldPassword");
+                const tfPass=document.getElementById("nuevaPassword");
+                let cError=document.getElementById("cAlerta");
+                if (tfEmail.value.trim().length===0) {
+                cError.textContent = "❌ Debes ingresar un email.";
+                cError.style.visibility = "visible";
+                
+}
+            }
+    
+        </script>
+    </head>
+    <body>
+        
+        
+        <div> <img id="logo" src="logo.png"></div>
+        <div id="form">
+            <h1>Cambio de contraseña</h1>
+            <form>
+                <input type="email" id="oldPassword" placeholder="email" required>
+                <br>              
+                <input type="password" id="nuevaPassword" placeholder="Nueva contraseña" required>
+                <input type="password" id="confirmPassword" placeholder="Confirmar contraseña" required>
+                <div id="cAlerta"></div>
+                <button type="submit" id="btSub" onclick=" BOnClick();"> Cambiar contraseña</button>
+                
+            </form>
+        </div>
+    </body>
+</html>

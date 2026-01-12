@@ -1,0 +1,61 @@
+/* Botón flotante modo oscuro */
+#darkModeToggle {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: #999;
+    color: #fff;
+    border: none;
+    padding: 10px 14px;
+    font-size: 20px;
+    border-radius: 8px;
+    cursor: pointer;
+    z-index: 999;
+    transition: 0.3s ease;
+    width: 5vh;
+    height: auto;
+}
+
+#darkModeToggle:hover {
+    background: #333;
+}
+
+/* ACTIVACIÓN DEL MODO OSCURO */
+.dark-mode {
+    background-color: #121212 !important;
+    color: #eaeaea !important;
+}
+
+/* Formularios, inputs, botones */
+.dark-mode #form {
+    background-color: #1e1e1e !important;
+}
+
+.dark-mode input {
+    background-color: #222 !important;
+    color: #fff !important;
+    border: 1px solid #555;
+}
+
+.dark-mode button {
+    background-color: #333 !important;
+    color: #fff !important;
+}
+.dark-mode h1 {
+    color: black !important;   
+}
+body.dark-mode::before {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.55); 
+    z-index: 0; 
+}
+
+#logo, #form, h1, input, button {
+    position: relative;
+    z-index: 1;
+}
