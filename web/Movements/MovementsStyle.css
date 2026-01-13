@@ -1,0 +1,50 @@
+body{
+    background-image: url("https://wallpapers.com/images/hd/stock-market-background-wdb83di320cjbktg.jpg"); /* Background image */
+    background-size: cover; /* Cover the entire viewport */
+    background-position: center; /* Center the background */
+    background-repeat: no-repeat; /* Do not repeat the background */
+    height: 100vh; /* Full viewport height */
+}     
+
+#logo{
+    height: 10vh; /* Logo height */
+    display: flex; /* Make it a block element */
+    margin: 5vh auto; /* Center horizontally with vertical margin */
+    box-shadow: 1px 6px 60px 6px whitesmoke; /* Shadow effect */
+    cursor: pointer; /* Pointer cursor on hover */
+    transition:transform 0.5s; /* Smooth transform transition */
+}
+
+#list{
+    height: auto; /* Automatic height */
+    width: 90%; /* Form width */
+    display: block; /* Block display */
+    background-position: center;  /* Center the background */
+    margin: auto;  /* Center horizontally */
+    background-color:#E3D8DE; /* Background color */
+    background-size: 50%; /* Background image size */
+    border-radius:22px; /* Rounded corners */
+    padding-bottom: 25px; /* Bottom padding */
+    box-shadow: 10px 10px 25px lightblue; /* Shadow effect */
+}
+
+h1{
+    text-align: center; /* Center text */
+    font-family: Tahoma; /* Font */
+    background-color:lightblue; /* Background color */
+    margin: 100px 0px 40px; /* Margin top, sides, bottom */
+    border-radius:22px 2px; /* Rounded corners */
+}
+
+
+}
+
+#logo:hover{
+    transform: scale(1.1); /* Zoom effect on hover */
+}
+
+input:hover{
+    background-color: lightblue; /* Input background on hover */
+}
+
+

@@ -1,0 +1,79 @@
+<!DOCTYPE html> 
+<html>
+    <head>
+        <title>Reset Password</title> <!-- Tab title -->
+        <meta charset="UTF-8"> <!-- Allows accents and ñ -->
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- Mobile screen adjustment -->
+        <link rel="icon" type="image/png" href="logo.png"> <!-- Browser icon -->
+        <link rel="stylesheet" href="MovementsStyle.css"> <!-- CSS file -->
+        <script type="text/javascript" src="CCjs.js" defer></script> <!-- External JS file (executes at the end) -->
+        
+
+    </head>
+
+    <body>
+      
+
+        <div>
+            <img id="logo" src="../../logo.png" onclick="window.open('../main.html', '_blank');"> <!-- Logo that opens main -->
+        </div>
+
+        <div id="list"> <!-- Main container for the form -->
+            <h1 id="titulo">Movements</h1> <!-- Page title -->
+
+            
+                
+            <ul id="movementsList">
+                
+
+            </ul>
+            
+        </div>
+        <script>
+async function cargarMovimientos() {
+    const accountId = 2654785441;
+    const url = `http://localhost:8080/CRUDBankServerSide/webresources/movement/account/${accountId}`;
+    const lista = document.getElementById('movementsList');
+
+    try {
+        const response = await fetch(url, {
+            method: 'GET',
+            headers: {
+                'Accept': 'application/json'
+            }
+        });
+
+        if (!response.ok) {
+            throw new Error(`Error en la petición: ${response.status}`);
+        }
+
+        const movimientos = await response.json();
+
+        // Limpiamos la lista antes de insertar
+        lista.innerHTML = '';
+
+        // Insertamos cada movimiento en un <li> con <span>
+        movimientos.forEach(m => {
+            const li = document.createElement('li');
+            li.innerHTML = `
+                <span>ID: ${m.id}</span>
+                <span>Amount: ${m.amount}</span>
+                <span>Balance: ${m.balance}</span>
+                <span>Timestamp: ${m.timestamp}</span>
+                <span>Description: ${m.description}</span>
+                <span>Account ID: ${m.account.id}</span>
+            `;
+            lista.appendChild(li);
+        });
+
+    } catch (error) {
+        console.error('Error al obtener movimientos:', error);
+        lista.innerHTML = `<li>Error: ${error.message}</li>`;
+    }
+}
+
+// Llamamos a la función al cargar la página
+cargarMovimientos();
+</script>
+    </body>
+</html>
