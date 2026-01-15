@@ -5,41 +5,92 @@
     <meta charset="UTF-8">
     <meta name = "viewport" content = "width = device-width, initial-scale = 1.0">
     <link rel="icon" type="image/png" href="../logo.png">
-    <link rel="stylesheet" href="../signup/CSSlogin.css">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-    <link rel="stylesheet" href="../darkMode.css"><!-- Archivo CSS alternativo. Modo oscuro. -->
-    <script type="text/javascript" src="../darkMode.js" defer></script><!-- Archivo js alternativo. Modo oscuro. -->
+    <!-- Main stylesheet (MODO CLARO) -->
+    
+    
+    <!-- Dark mode stylesheet (SEPARADO) -->
+    <link rel="stylesheet" href="assets/css/style.css"  >
+    <link rel="stylesheet" href="assets/css/dark-mode.css" id="dark-mode-css" >
 </head>
 
 <body>
-    <img id="darkModeToggle" src="../moon.png" alt="dark mode">
-    <div class="container">
-        <!-- Logo that links back to homepagee -->
-        <a href="../index.html"><img id="logo" src="../logo.png" alt="Logo"></a>
-        <div id="form">
-            <h1 id="titulo">SIGN IN</h1>
-            <p>Enter your email address and password to access all your bank account information.</p>
-            <!-- Sign-up form -->
-            <form id="formulario" action="/CRUDBankServerSide/webresources/customer/sigin/" enctype="application/x-www-form-urlencoded" accept-charset="UTF-8">
-                <div class="campo">
-                    <label for="Email">Email</label>
-                    <input type="email" id="Email" name="Email" placeholder="Email">
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <a class="navbar-brand" href="../index.html">
+                <i class="fas fa-university"></i>
+                <span>Digital Bank</span>
+            </a>
+            
+            <button class="nav-toggler" id="navToggler">
+                <i class="fas fa-bars"></i>
+            </button>
+            
+            <div class="nav-menu" id="navMenu">
+                <ul>
+                    <li><a href="../index.html">Home</a></li>
+                    <li><a href="../about.html">About Us</a></li>
+                    <li><a href="../services.html">Services</a></li>
+
+                </ul>
+                
+            </div>
+        </div>
+    </nav>
+
+    <!-- Form -->
+    <div class="container-form">
+        <div class="form-card">
+            <div class="form-header">
+                <div class="form-logo">
+                    <i class="fas fa-right-to-bracket"></i>
+                    <button id="darkModeToggle">
+                        <i class="fas fa-moon"></i>
+                    </button>
                 </div>
-                <div class="campo">
-                    <label for="Password">Password</label>
-                    <input type="password" id="Password" name="Password" placeholder="Password">
-                    <div class="verContrasenya">
-                        <input type="checkbox" id="verContrasenya" name="verContrasenya" style="cursor: pointer;">
-                        <label for="verContrasenya" style="cursor: pointer;">Show password</label>
+                <h1>SIGN IN</h1>
+                <p>Enter your email address and password to access your account</p>
+            </div>
+
+            <form id="formulario" action="/CRUDBankServerSide/webresources/customer/sigin/" novalidate>
+
+                <!-- Email -->
+                <div class="form-group">
+                    <label for="Email">Email *</label>
+                    <input type="email" id="Email" name="Email" placeholder="example@email.com">
+                </div>
+
+                <!-- Password -->
+                <div class="form-group">
+                    <label for="Password">Password *</label>
+                    <div class="password-container">
+                        <input type="password" id="Password" name="Password" placeholder="Your password">
+                        <button type="button" class="password-toggle" data-target="Password">
+                            <i class="fas fa-eye"></i>
+                        </button>
                     </div>
                 </div>
-                <!-- Message box for errors/success -->
-                <div id="responseMsgSignUp" style="display:none;"></div>
-                <!-- Submit button -->
-                <button type="submit">LOGIN</button>
+
+                <!-- Error message -->
+                <div id="responseMsgSignUp" class="alert-message" style="display:none;"></div>
+
+                <!-- Submit -->
+                <button type="submit" class="submit-btn">
+                    <i class="fas fa-right-to-bracket"></i> Login
+                </button>
+
+                <!-- Register link -->
+                <div class="login-link">
+                    Don’t have an account? <a href="../signup/signup.html">Create one</a>
+                </div>
             </form>
         </div>
     </div>
+
+    
 
 <script>
     const inputEmail = document.getElementById("Email");
@@ -49,11 +100,47 @@
     const verContrasenya = document.getElementById("verContrasenya");
     const formulario = document.getElementById("formulario");
 
-    verContrasenya.addEventListener("change", () => {
-        if(verContrasenya.checked)
-            inputPassword.type = "text";
-        else
-            inputPassword.type = "password"; 
+    
+    document.addEventListener("DOMContentLoaded", () => {
+        const darkModeToggle = document.getElementById('darkModeToggle');
+        const darkModeCSS = document.getElementById('dark-mode-css');
+        const darkModeIcon = darkModeToggle.querySelector('i');
+
+        // Cargar preferencia
+        if (localStorage.getItem('darkMode') === 'enabled') {
+            darkModeCSS.disabled = false;
+            document.body.classList.add('dark-mode');
+            darkModeIcon.className = 'fas fa-sun';
+        }
+
+        darkModeToggle.addEventListener('click', () => {
+            if (darkModeCSS.disabled) {
+                darkModeCSS.disabled = false;
+                document.body.classList.add('dark-mode');
+                localStorage.setItem('darkMode', 'enabled');
+                darkModeIcon.className = 'fas fa-sun';
+            } else {
+                darkModeCSS.disabled = true;
+                document.body.classList.remove('dark-mode');
+                localStorage.setItem('darkMode', 'disabled');
+                darkModeIcon.className = 'fas fa-moon';
+            }
+        });
+    });
+
+    document.querySelectorAll('.password-toggle').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const input = document.getElementById(btn.dataset.target);
+            const icon = btn.querySelector('i');
+
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.className = 'fas fa-eye-slash';
+            } else {
+                input.type = 'password';
+                icon.className = 'fas fa-eye';
+            }
+        });
     });
 
     function mostrarError(mensaje) {
