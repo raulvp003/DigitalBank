@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Customers | Digital Bank</title>
+    <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+
+<nav class="navbar">
+    <div class="nav-container">
+        <a class="navbar-brand" href="index.html">
+            <i class="fas fa-university"></i> Digital Bank
+        </a>
+    </div>
+</nav>
+
+<div class="container-form">
+    <h1>Customer Management</h1>
+
+    <!-- Formulario para crear/editar cliente -->
+    <div class="form-card">
+        <form id="customerForm">
+            <input type="hidden" id="customerId">
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="firstName">First Name *</label>
+                    <input type="text" id="firstName" required>
+                </div>
+                <div class="form-group">
+                    <label for="middleInitial">Middle Initial *</label>
+                    <input type="text" id="middleInitial" maxlength="1" required>
+                </div>
+                <div class="form-group">
+                    <label for="lastName">Last Name *</label>
+                    <input type="text" id="lastName" required>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="street">Street</label>
+                <input type="text" id="street">
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="city">City</label>
+                    <input type="text" id="city">
+                </div>
+                <div class="form-group">
+                    <label for="state">State</label>
+                    <input type="text" id="state">
+                </div>
+                <div class="form-group">
+                    <label for="zip">ZIP</label>
+                    <input type="text" id="zip">
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="phone">Phone</label>
+                <input type="text" id="phone">
+            </div>
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input type="email" id="email">
+            </div>
+            
+            <button type="submit" class="submit-btn">Save Customer</button>
+        </form>
+    </div>
+
+    <!-- Tabla de clientes -->
+    <table class="customers-table" border="1">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>First Name</th>
+                <th>Middle Initial</th>
+                <th>Last Name</th>
+                <th>City</th>
+                <th>Email</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody id="customersTableBody">
+            <!-- Los clientes se cargarán aquí dinámicamente -->
+        </tbody>
+    </table>
+</div>
+
+<script src="assets/js/customers.js"></script>
+</body>
+</html>
