@@ -9,31 +9,27 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
     
-    // ===== DARK MODE =====
+    // ===== DARK MODE (ALTERNATE STYLESHEET) =====
     const darkModeToggle = document.getElementById('darkModeToggle');
     const darkModeIcon = darkModeToggle.querySelector('i');
     const darkModeCSS = document.getElementById('dark-mode-css');
-    
-    // Load saved preference
+
+    // Cargar preferencia guardada
     if (localStorage.getItem('darkMode') === 'enabled') {
-        document.body.classList.add('dark-mode');
         darkModeCSS.disabled = false;
         darkModeIcon.className = 'fas fa-sun';
     } else {
-        document.body.classList.remove('dark-mode');
         darkModeCSS.disabled = true;
         darkModeIcon.className = 'fas fa-moon';
     }
-    
-    // Toggle dark mode
+
+    // Toggle con el botón
     darkModeToggle.addEventListener('click', () => {
         if (darkModeCSS.disabled) {
-            document.body.classList.add('dark-mode');
             darkModeCSS.disabled = false;
             localStorage.setItem('darkMode', 'enabled');
             darkModeIcon.className = 'fas fa-sun';
         } else {
-            document.body.classList.remove('dark-mode');
             darkModeCSS.disabled = true;
             localStorage.setItem('darkMode', 'disabled');
             darkModeIcon.className = 'fas fa-moon';
@@ -230,16 +226,7 @@ document.addEventListener('DOMContentLoaded', function() {
             localStorage.setItem('customer', JSON.stringify(customer));
             guardarDatosSesion(email);
             
-            // Show success message
-            msgBox.className = "alert-message alert-success";
-            msgBox.textContent = '✅ User successfully registered ✅';
-            msgBox.style.display = 'block';
-            
-            // Redirect to login page after 1 second
-            setTimeout(() => {
-                window.location.href = "../signin/signin.html"; 
-            }, 1000);
-            
+
          
         
             fetch("/CRUDBankServerSide/webresources/customer", {
@@ -262,7 +249,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 msgBox.style.display = 'block';
                 
                 setTimeout(() => {
-                    window.location.href = "../signin/signin.html"; 
+                    window.location.href = "signIn.html"; 
                 }, 1000);
             })
             .catch(error => {

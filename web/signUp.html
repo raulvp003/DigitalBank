@@ -8,19 +8,19 @@
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
-    <!-- Main stylesheet (MODO CLARO) -->
-    <link rel="stylesheet" href="style.css">
+
     
     <!-- Dark mode stylesheet (SEPARADO) -->
-      <link rel="stylesheet" href="assets/css/style.css"  >
-    <link rel="stylesheet" href="assets/css/dark-mode.css" id="dark-mode-css" >
+     <link rel="stylesheet" href="assets/css/style.css" title="Normal">
+<link rel="alternate stylesheet" href="assets/css/dark-mode.css" title="Dark mode" id="dark-mode-css" >
+
 </head>
 <body>
    
     <!-- Navbar -->
     <nav class="navbar">
         <div class="nav-container">
-            <a class="navbar-brand" href="../index.html">
+            <a class="navbar-brand" href="index.html">
                 <i class="fas fa-university"></i>
                 <span>Digital Bank</span>
             </a>
@@ -31,7 +31,7 @@
             
             <div class="nav-menu" id="navMenu">
                 <ul>
-                    <li><a href="../index.html">Home</a></li>
+                    <li><a href="index.html">Home</a></li>
                     <li><a href="../about.html">About Us</a></li>
                     <li><a href="../services.html">Services</a></li>
 
@@ -69,7 +69,7 @@
                     </div>
                     
                     <div class="form-group">
-                        <label for="MiddleInitial">Middle Initial</label>
+                        <label for="MiddleInitial">Middle Initial *</label>
                         <input type="text" id="MiddleInitial" placeholder="M" maxlength="1">
                         <div class="error-message" id="MiddleInitialError">
                             <i class="fas fa-exclamation-circle"></i>
@@ -191,12 +191,12 @@
                 
                 <!-- Login link -->
                 <div class="login-link">
-                    Already have an account? <a href="../signin/signin.html">Sign in</a>
+                    Already have an account? <a href="signIn.html">Sign in</a>
                 </div>
             </form>
         </div>
     </div>
 
-    <script src="assets/js/script.js"></script>
+    <script src="assets/js/scriptSignUp.js"></script>
 </body>
 </html>

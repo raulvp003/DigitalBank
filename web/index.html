@@ -5,18 +5,20 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Home - Your Bank</title>
     <link rel="icon" type="image/png" href="../logo.png">
+    
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-   
-     <link rel="stylesheet" href="assets/css/style.css"  >
-    <link rel="stylesheet" href="assets/css/dark-mode.css" id="dark-mode-css" >
+    <!-- Main Stylesheet -->
+    <link rel="stylesheet" href="assets/css/style.css" title="Normal">
+    <!-- Dark Mode Alternate Stylesheet -->
+    <link rel="alternate stylesheet" href="assets/css/dark-mode.css" title="Dark mode" id="dark-mode-css">
 </head>
 <body>
     <!-- Navbar -->
     <nav class="navbar">
         <div class="nav-container">
-            <a class="navbar-brand" href="../index.html">
+            <a class="navbar-brand" href="index.html">
                 <i class="fas fa-university"></i>
                 <span>Digital Bank</span>
             </a>
@@ -34,53 +36,64 @@
         </div>
     </nav>
 
-<!-- Hero / Welcome Section -->
-<div class="container-form home-hero">
-    <div class="form-card home-card">
-        <h1>Welcome to Your Bank</h1>
-        <button id="darkModeToggle">
-            <i class="fas fa-moon"></i>
-        </button>
-        <div class="buttons">
-            <button class="submit-btn register" onclick="window.location.href='signup/signUp.html'">
-                <i class="fas fa-user-plus"></i> Register
+    <!-- Hero / Welcome Section -->
+    <div class="container-form home-hero">
+        <div class="form-card home-card">
+            <h1>Welcome to Your Bank</h1>
+            
+            <!-- Dark Mode Toggle -->
+            <button id="darkModeToggle">
+                <i class="fas fa-moon"></i>
             </button>
-            <button class="submit-btn login" onclick="window.location.href='signin/signin.html'">
-                <i class="fas fa-right-to-bracket"></i> Log In
-            </button>
+
+            <div class="buttons">
+                <button class="submit-btn register" onclick="window.location.href='signUp.html'">
+                    <i class="fas fa-user-plus"></i> Register
+                </button>
+                <button class="submit-btn login" onclick="window.location.href='signIn.html'">
+                    <i class="fas fa-right-to-bracket"></i> Log In
+                </button>
+            </div>
         </div>
     </div>
-</div>
 
-<script>
-document.addEventListener('DOMContentLoaded', () => {
-    const darkModeToggle = document.getElementById('darkModeToggle');
-    const darkModeCSS = document.getElementById('dark-mode-css');
-    const darkModeIcon = darkModeToggle.querySelector('i');
+    <script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const darkModeToggle = document.getElementById('darkModeToggle');
+        const darkModeCSS = document.getElementById('dark-mode-css');
+        const darkModeIcon = darkModeToggle.querySelector('i');
 
-    // Cargar preferencia guardada
-    if (localStorage.getItem('darkMode') === 'enabled') {
-        document.body.classList.add('dark-mode');
-        darkModeCSS.disabled = false;
-        darkModeIcon.className = 'fas fa-sun';
-    }
-
-    // Toggle dark mode al hacer click
-    darkModeToggle.addEventListener('click', () => {
-        if (darkModeCSS.disabled) {
-            document.body.classList.add('dark-mode');
+        // Cargar preferencia guardada
+        if (localStorage.getItem('darkMode') === 'enabled') {
             darkModeCSS.disabled = false;
-            localStorage.setItem('darkMode', 'enabled');
             darkModeIcon.className = 'fas fa-sun';
         } else {
-            document.body.classList.remove('dark-mode');
             darkModeCSS.disabled = true;
-            localStorage.setItem('darkMode', 'disabled');
             darkModeIcon.className = 'fas fa-moon';
         }
-    });
-});
-</script>
 
+        // Toggle dark mode al hacer click
+        darkModeToggle.addEventListener('click', () => {
+            if (darkModeCSS.disabled) {
+                darkModeCSS.disabled = false;
+                localStorage.setItem('darkMode', 'enabled');
+                darkModeIcon.className = 'fas fa-sun';
+            } else {
+                darkModeCSS.disabled = true;
+                localStorage.setItem('darkMode', 'disabled');
+                darkModeIcon.className = 'fas fa-moon';
+            }
+        });
+
+        // ===== MOBILE MENU =====
+        const navToggler = document.getElementById('navToggler');
+        const navMenu = document.getElementById('navMenu');
+        if (navToggler && navMenu) {
+            navToggler.addEventListener('click', () => {
+                navMenu.classList.toggle('active');
+            });
+        }
+    });
+    </script>
 </body>
 </html>
