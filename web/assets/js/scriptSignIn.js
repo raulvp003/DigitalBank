@@ -1,52 +1,43 @@
-const inputEmail = document.getElementById("Email");
-const inputPassword = document.getElementById("Password");
-const responseMsg = document.getElementById("responseMsgSignUp");
+    const inputEmail = document.getElementById("Email");
+    const inputPassword = document.getElementById("Password");
+    const responseMsg = document.getElementById("responseMsgSignUp");
 
-const formulario = document.getElementById("formulario");
+    const verContrasenya = document.getElementById("verContrasenya");
+    const formulario = document.getElementById("formulario");
 
-document.addEventListener('DOMContentLoaded', function() {
-    // ===== MOBILE MENU =====
-    const navToggler = document.getElementById('navToggler');
-    const navMenu = document.getElementById('navMenu');
+    
+    document.addEventListener("DOMContentLoaded", () => {
+        const darkModeToggle = document.getElementById('darkModeToggle');
+        const darkModeCSS = document.getElementById('dark-mode-css');
+        const darkModeIcon = darkModeToggle.querySelector('i');
 
-    if (navToggler && navMenu) {
-        navToggler.addEventListener('click', () => {
-            navMenu.classList.toggle('active');
-        });
-    }
-
-    // ===== DARK MODE (ALTERNATE STYLESHEET) =====
-    const darkModeToggle = document.getElementById('darkModeToggle');
-    const darkModeIcon = darkModeToggle.querySelector('i');
-    const darkModeCSS = document.getElementById('dark-mode-css');
-
-    // Cargar preferencia guardada
-    if (localStorage.getItem('darkMode') === 'enabled') {
-        darkModeCSS.disabled = false;
-        darkModeIcon.className = 'fas fa-sun';
-    } else {
-        darkModeCSS.disabled = true;
-        darkModeIcon.className = 'fas fa-moon';
-    }
-
-    // Toggle con el botón
-    darkModeToggle.addEventListener('click', () => {
-        if (darkModeCSS.disabled) {
+        // Cargar preferencia
+        if (localStorage.getItem('darkMode') === 'enabled') {
             darkModeCSS.disabled = false;
-            localStorage.setItem('darkMode', 'enabled');
+            document.body.classList.add('dark-mode');
             darkModeIcon.className = 'fas fa-sun';
-        } else {
-            darkModeCSS.disabled = true;
-            localStorage.setItem('darkMode', 'disabled');
-            darkModeIcon.className = 'fas fa-moon';
         }
+
+        darkModeToggle.addEventListener('click', () => {
+            if (darkModeCSS.disabled) {
+                darkModeCSS.disabled = false;
+                document.body.classList.add('dark-mode');
+                localStorage.setItem('darkMode', 'enabled');
+                darkModeIcon.className = 'fas fa-sun';
+            } else {
+                darkModeCSS.disabled = true;
+                document.body.classList.remove('dark-mode');
+                localStorage.setItem('darkMode', 'disabled');
+                darkModeIcon.className = 'fas fa-moon';
+            }
+        });
     });
 
-    // ===== SHOW/HIDE PASSWORD =====
     document.querySelectorAll('.password-toggle').forEach(btn => {
         btn.addEventListener('click', () => {
             const input = document.getElementById(btn.dataset.target);
             const icon = btn.querySelector('i');
+
             if (input.type === 'password') {
                 input.type = 'text';
                 icon.className = 'fas fa-eye-slash';
@@ -57,14 +48,14 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
-    // ===== LOGIN FORM VALIDATION =====
     function mostrarError(mensaje) {
         responseMsg.textContent = mensaje;
-        responseMsg.className = "alert-message alert-error";
+        responseMsg.classList.add("error");
         responseMsg.style.display = "block";
     }
 
-    formulario.addEventListener("submit", (event) => {
+
+    formulario.addEventListener("submit", (event) =>{
         event.preventDefault();
         responseMsg.style.display = "none";
         responseMsg.className = "";
@@ -72,27 +63,36 @@ document.addEventListener('DOMContentLoaded', function() {
         const email = inputEmail.value.trim();
         const password = inputPassword.value.trim();
 
-        const emailRegExp = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+        const emailRegExp = new RegExp("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}");
 
-        if (email === "" || email.length > 255 || !emailRegExp.test(email)) {
-            let mensaje = email === "" ? "Se debe rellenar el email..."
-                        : email.length > 255 ? "El email no puede tener más de 255 caracteres..."
-                        : "El email no tiene un formato válido...";
+        if(email === "" || email.length > 255 || !emailRegExp.exec(email)){
+            let mensaje = "";
+
+            if(email === "")
+                mensaje = "Se deben rellenar el email...";
+            else if(email.length > 255)
+                mensaje = "El email no puede tener más de 255 caracteres...";
+            else 
+                mensaje = "El email no tiene un formato valido...";
+
             mostrarError(mensaje);
             return;
         }
 
-        if (password.length > 255 || password.length < 6) {
-            let mensaje = password.length > 255 ? "La contraseña no puede tener más de 255 caracteres."
-                        : "La contraseña debe tener al menos 6 caracteres.";
+        if(password.length > 255 || password.length < 6){
+            let mensaje = "";
+            if(password.length > 255)
+                mensaje = "La contraseña no puede tener mas de 255 caracteres.";
+            else
+                mensaje = "La contraseña debe tener al menos 6 caracteres.";
+
             mostrarError(mensaje);
             return;
         }
-
         sendRequestAndProcessResponse();
     });
 
-    // ===== CUSTOMER CONSTRUCTOR =====
+/*
     function Customer(id, firstName, lastName, middleInitial, street, city, state, zip, phone, email, password){
         this.id = id;
         this.firstName = firstName;
@@ -106,55 +106,71 @@ document.addEventListener('DOMContentLoaded', function() {
         this.email = email;
         this.password = password;
     }
-
-    // ===== FETCH LOGIN =====
-    function sendRequestAndProcessResponse() {
+  */                 
+    function sendRequestAndProcessResponse (){
         const email = inputEmail.value.trim();
         const password = inputPassword.value.trim();
 
         fetch(formulario.action + `${encodeURIComponent(email)}/${encodeURIComponent(password)}`, {
-            method: 'GET',
+            method: 'GET', 
             headers: {'Content-Type': 'application/xml'}
         }).then(res => {
-            if (res.status === 401)
-                return res.text().then(() => {throw new Error("Credenciales incorrectas");});
-            if (res.status === 500)
-                return res.text().then(() => {throw new Error("Error en el servidor");});
-            if (!res.ok)
-                return res.text().then(text => {throw new Error(text || "Error inesperado");});
+            if(res.status === 401)
+                return res.text().then(text => {throw new Error("Credenciales Incorrectas");});
+            else if(res.status === 500)
+                return res.text().then(text => {throw new Error("Error en el Servidor");});
+            else if (!res.ok)
+                return res.text().then(text => {throw new Error(text || "Error Inesperado");});
             return res.text();
         }).then(data => {
             storeResponseXMLData(data);
-            window.location.href = "main.html"; // Main
+            window.location.href = "main.html"; /* Main */
         }).catch(error => {
+            //textoErrorP.innerHTML = 'Error: ' + error.message;
             mostrarError(error.message);
         });
     }
 
-    // ===== PARSE XML Y GUARDAR EN SESSION =====
-    function storeResponseXMLData(xmlString) {
+    function storeResponseXMLData (xmlString){ //Parametro -> cadena de texto que contiene los datos en formato XML.
+        //Crea un parser XML -> DOMParser es una clase del navegador que permite convertir texto XML o HTML en un documento DOM.
         const parser = new DOMParser();
-        const xmlDoc = parser.parseFromString(xmlString, "application/xml");
+        //Convierte la cadena XML en un objeto JavaScript tipo Document.
+        const xmlDoc = parser.parseFromString(xmlString,"application/xml");
 
-        const customerNode = xmlDoc.getElementsByTagName("customer")[0];
+        //Extrae los datos del XML
+        //getElementByTagName -> Busca elementos por el nombre de su etiqueta (tag HTML o XML).
+        //const customerNode = xmlDoc.getElementsByTagName("customer")[0];
+        //const id = customerNode.querySelector(":scope > id").textContent.trim();
+        const id = xmlDoc.getElementsByTagName("id")[0].textContent;
+        const firstName = xmlDoc.getElementsByTagName("firstName")[0].textContent;
+        const lastName = xmlDoc.getElementsByTagName("lastName")[0].textContent;
+        const middleInitial = xmlDoc.getElementsByTagName("middleInitial")[0].textContent;
+        const street = xmlDoc.getElementsByTagName("street")[0].textContent;
+        const city = xmlDoc.getElementsByTagName("city")[0].textContent;
+        const state = xmlDoc.getElementsByTagName("state")[0].textContent;
+        const zip = xmlDoc.getElementsByTagName("zip")[0].textContent;
+        const phone = xmlDoc.getElementsByTagName("phone")[0].textContent;
+        const email = xmlDoc.getElementsByTagName("email")[0].textContent;
+        const password = xmlDoc.getElementsByTagName("password")[0].textContent;
+
+        //Crea un objeto Customer -> Usa los valores extraídos del XML para crear una instancia de la clase Customer.
         const customer = new Customer(
-            customerNode.querySelector(":scope > id").textContent.trim(),
-            customerNode.querySelector(":scope > firstName").textContent,
-            customerNode.querySelector(":scope > lastName").textContent,
-            customerNode.querySelector(":scope > middleInitial").textContent,
-            customerNode.querySelector(":scope > street").textContent,
-            customerNode.querySelector(":scope > city").textContent,
-            customerNode.querySelector(":scope > state").textContent,
-            customerNode.querySelector(":scope > zip").textContent,
-            customerNode.querySelector(":scope > phone").textContent,
-            customerNode.querySelector(":scope > email").textContent,
-            customerNode.querySelector(":scope > password").textContent
+            id, firstName, lastName, middleInitial, street, 
+            city, state, zip, phone, email, password
         );
 
-        // Guardar todo en sessionStorage
-        for (const key in customer) {
-            sessionStorage.setItem(`customer.${key}`, customer[key]);
-        }
+        //Guarda los datos en sessionStorage -> Guarda cada dato en el almacenamiento de sesión del navegador.
+        sessionStorage.setItem("customer.id", customer.id);
+        sessionStorage.setItem("customer.firstName", customer.firstName);
+        sessionStorage.setItem("customer.lastName", customer.lastName);
+        sessionStorage.setItem("customer.middleInitial", customer.middleInitial);
+        sessionStorage.setItem("customer.street", customer.street);
+        sessionStorage.setItem("customer.city", customer.city);
+        sessionStorage.setItem("customer.state", customer.state);
+        sessionStorage.setItem("customer.zip", customer.zip);
+        sessionStorage.setItem("customer.phone", customer.phone);
+        sessionStorage.setItem("customer.email", customer.email);
+        sessionStorage.setItem("customer.password", customer.password);
         console.log("UserId en sessionStorage:", sessionStorage.getItem("customer.id"));
+
     }
-});
