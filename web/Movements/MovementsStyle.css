@@ -37,7 +37,7 @@ h1{
 }
 
 
-}
+
 
 #logo:hover{
     transform: scale(1.1); /* Zoom effect on hover */
@@ -45,6 +45,169 @@ h1{
 
 input:hover{
     background-color: lightblue; /* Input background on hover */
+}
+
+
+/* Container de la lista */
+#movementsList {
+    list-style: none;       /* Quitar los bullets */
+    padding: 0;
+    margin: 20px auto;
+    max-width: 900px;
+    border-collapse: collapse; /* Para bordes consistentes */
+    font-family: Arial, sans-serif;
+}
+
+/* Cada fila */
+#movementsList li {
+    display: flex; /* Flex para alinear horizontalmente */
+    justify-content: space-between;
+    padding: 8px 12px;
+    border-bottom: 1px solid #ccc;
+    border-radius: 6px;
+    background-color: #f9f9f9;
+    align-items: center;
+    transition: background-color 0.3s;
+}
+
+
+#movementsList li:hover {
+    background-color: #e0f0ff;
+}
+
+/* Cabecera de la tabla simulada */
+#movementsList li.header {
+    font-weight: bold;
+    background-color: #3584e4;
+    color: white;
+    cursor: default;
+}
+
+#movementsList li span {
+    display: block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+
+
+
+/* Efecto hover según tipo de movimiento */
+#movementsList li.income:hover {
+    background-color: #d4f7d4; /* Verde claro */
+}
+
+#movementsList li.expense:hover {
+    background-color: #f7d4d4; /* Rojo claro */
+}
+
+
+////////////////////////////////////////////////////////////////////////////////////////
+
+/* Formulario dentro del modal */
+
+
+/* Título del modal */
+#modalTitle {
+    text-align: center;
+    color: #1a5fb4;
+    margin-bottom: 15px;
+}
+
+/* Grupos de formulario */
+.form-group {
+    display: flex;
+    flex-direction: column;
+}
+
+label {
+    font-weight: 600;
+    margin-bottom: 5px;
+    color: #1a5fb4;
+}
+
+input,select,option{
+    padding: 10px 12px;
+    border: 2px solid #c5d9ff;
+    border-radius: 8px;
+    font-size: 14px;
+    transition: all 0.3s;
+}
+
+input:focus {
+    outline: none;
+    border-color: #3584e4;
+    box-shadow: 0 0 0 3px rgba(53, 132, 228, 0.2);
+}
+
+/* Botones del modal */
+.form-buttons {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+.form-buttons button {
+    flex: 1;
+    padding: 10px;
+    border: none;
+    border-radius: 8px;
+    background: #3584e4;
+    color: white;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.form-buttons button:hover {
+    background: #1a5fb4;
+}
+
+.form-buttons button#btnCancel {
+    background: #e74c3c;
+}
+
+.form-buttons button#btnCancel:hover {
+    background: #c0392b;
+}
+/* Modal overlay */
+#movementModal {
+    display: none; /* oculto por defecto */
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5); /* fondo semi-transparente */
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+#movementForm {
+    background: white;
+    padding: 25px 30px;
+    border-radius: 12px;
+    width: 300px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+
+
+/* Quitar los botones de los inputs tipo number */
+/* Quitar los botones solo del input "recipient" */
+#recipient::-webkit-outer-spin-button,
+#recipient::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+#recipient {
+    -moz-appearance: textfield; /* Firefox */
 }
 
 

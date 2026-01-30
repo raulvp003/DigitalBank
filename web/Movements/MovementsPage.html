@@ -6,7 +6,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- Mobile screen adjustment -->
         <link rel="icon" type="image/png" href="logo.png"> <!-- Browser icon -->
         <link rel="stylesheet" href="MovementsStyle.css"> <!-- CSS file -->
-        <script type="text/javascript" src="CCjs.js" defer></script> <!-- External JS file (executes at the end) -->
+        <script type="text/javascript" src="Movements.js" defer></script> <!-- External JS file (executes at the end) -->
         
 
     </head>
@@ -18,62 +18,53 @@
             <img id="logo" src="../../logo.png" onclick="window.open('../main.html', '_blank');"> <!-- Logo that opens main -->
         </div>
 
-        <div id="list"> <!-- Main container for the form -->
+        <div id="list"> <!-- Main container  -->
             <h1 id="titulo">Movements</h1> <!-- Page title -->
 
             
                 
             <ul id="movementsList">
+                <li class="header">
+                <span>ID</span>
+                <span>Amount</span>
+                <span>Balance</span>
+                <span>Timestamp</span>
+                <span>Operation</span>
+            </li>
                 
 
             </ul>
-            
+            <button id="btnCreateMovement">New Movement</button>
+             <button >Undo Last Movement</button>
         </div>
-        <script>
-async function cargarMovimientos() {
-    const accountId = 2654785441;
-    const url = `http://localhost:8080/CRUDBankServerSide/webresources/movement/account/${accountId}`;
-    const lista = document.getElementById('movementsList');
+        
 
-    try {
-        const response = await fetch(url, {
-            method: 'GET',
-            headers: {
-                'Accept': 'application/json'
-            }
-        });
+<!-- Modal de creación de movimiento -->
+        <div id="movementModal">
+            <form id="movementForm">
+                <h2 id="modalTitle">Create Movement</h2>
 
-        if (!response.ok) {
-            throw new Error(`Error en la petición: ${response.status}`);
-        }
-
-        const movimientos = await response.json();
-
-        // Limpiamos la lista antes de insertar
-        lista.innerHTML = '';
-
-        // Insertamos cada movimiento en un <li> con <span>
-        movimientos.forEach(m => {
-            const li = document.createElement('li');
-            li.innerHTML = `
-                <span>ID: ${m.id}</span>
-                <span>Amount: ${m.amount}</span>
-                <span>Balance: ${m.balance}</span>
-                <span>Timestamp: ${m.timestamp}</span>
-                <span>Description: ${m.description}</span>
-                <span>Account ID: ${m.account.id}</span>
-            `;
-            lista.appendChild(li);
-        });
-
-    } catch (error) {
-        console.error('Error al obtener movimientos:', error);
-        lista.innerHTML = `<li>Error: ${error.message}</li>`;
-    }
-}
-
-// Llamamos a la función al cargar la página
-cargarMovimientos();
-</script>
+               <!-- <div class="form-group">
+                    <label for="recipient">Destination Account:</label>
+                    <input type="number" id="recipient"  min="0"required>
+                </div>-->
+                <div class="form-group">
+                    <label for="amount">Amount:</label>
+                    <input type="number" id="amount"  step="0.5" min="1"required>
+                </div>
+                <div class="form-group">
+                    <label for="Operation">Operation</label>
+                                <select id="Operation" name="Operation">
+                                    <option value="Deposit">Deposit</option>
+                                    <option value="Payment">Payment</option>
+                                </select>
+                    </label>
+                </div>
+                <div class="form-buttons">
+                    <button type="submit">Submit</button>
+                    <button type="button" id="btnCancel">Cancel</button>
+                </div>
+            </form>
+        </div>
     </body>
 </html>
