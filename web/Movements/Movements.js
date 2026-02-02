@@ -1,43 +1,35 @@
+const url = "/CRUDBankServerSide/webresources/movement";
+const accountId = "2654785441";
+
 async function cargarMovimientos() {
-    const url = "/CRUDBankServerSide/webresources/movement";
     const lista = document.getElementById('movementsList');
-    
+    lista.innerHTML = "";
+    let movimientos = [];
 
     try {
-        const response = await fetch(`${url}/account/${accountId}`);
+        const response = await fetch(`${url}/account/${accountId}`, {
+            headers: { "Accept": "application/json" }
+        });
 
-        if (!response.ok) {
-            throw new Error(`Error en la petición: ${response.status}`);
-        }
+        if (!response.ok) throw new Error(`Error en la petición: ${response.status}`);
 
-        const xmlText = await response.text();
+        movimientos = await response.json();
 
-        // Parsear XML
-        const parser = new DOMParser();
-        const xml = parser.parseFromString(xmlText, "application/xml");
-
-        const movimientosXML = xml.getElementsByTagName("movement");
-
-        // Agregar movimientos
-        [...movimientosXML].forEach(m => {
-            const get = tag => m.getElementsByTagName(tag)[0]?.textContent ?? '';
-              // Formatear timestamp
-    let rawTimestamp = get("timestamp");
-    let formattedTimestamp = rawTimestamp ? new Date(rawTimestamp).toLocaleString() : '';
-    
-     const li = document.createElement('li');
-
-            // Detectar si es ingreso o gasto
-            const amount = parseFloat(get("amount"));
+        movimientos.forEach(m => {
+            const li = document.createElement('li');
+            const amount = parseFloat(m.amount);
             li.className = amount >= 0 ? "income" : "expense";
 
-            
+            let formattedTimestamp = m.timestamp
+                ? new Date(m.timestamp).toLocaleString()
+                : '';
+
             li.innerHTML = `
-                <span>${get("id")}</span>
-                <span>${get("amount")}</span>
-                <span>${get("balance")}</span>
+                <span>${m.id}</span>
+                <span>${m.amount}</span>
+                <span>${m.balance}</span>
                 <span>${formattedTimestamp}</span>
-                <span>${get("description")}</span>
+                <span>${m.description}</span>
             `;
             lista.appendChild(li);
         });
@@ -46,7 +38,28 @@ async function cargarMovimientos() {
         console.error('Error al obtener movimientos:', error);
         lista.innerHTML = `<li>Error: ${error.message}</li>`;
     }
+
+    // Último balance
+    let lastBalance = 0;
+    if (movimientos.length > 0) {
+        const lastMovement = movimientos[movimientos.length - 1];
+        lastBalance = parseFloat(
+            lastMovement.balance !== undefined && lastMovement.balance !== null
+                ? lastMovement.balance
+                : 0
+        );
+    }
+
+    // Mostrar saldo actual
+    const balanceDiv = document.getElementById("currentBalance");
+    balanceDiv.textContent = `Current Balance: ${lastBalance.toFixed(2)}`;
+
+    return lastBalance;
 }
+
+
+
+
 
 function createMovementsHandler(){
      const movementModal = document.getElementById("movementModal");
@@ -70,7 +83,7 @@ async function movementCreator(event) {
     try {
         const amountInput = document.getElementById("amount").value;
         const operation = document.getElementById("Operation").value;
-        const accountId = "2654785441";
+        
 
         const amount = parseFloat(amountInput);
 
@@ -82,14 +95,9 @@ async function movementCreator(event) {
             throw new Error("Operation is required");
         }
 
-        // 1️⃣ Obtener movimientos desde la BBDD
-        const movements = await fetchMovements(accountId);
+       
+       const previousBalance = await cargarMovimientos();
 
-        // 2️⃣ Obtener balance previo REAL (desde backend)
-        let previousBalance = 0;
-        if (movements.length > 0) {
-            previousBalance = parseFloat(movements[movements.length - 1].balance);
-        }
 
         // 3️⃣ Calcular nuevo balance
         let totalBalance;
@@ -114,7 +122,7 @@ async function movementCreator(event) {
         };
 
         // 5️⃣ Enviar a la BBDD
-        const response = await fetch(`${SERVICE_URL}/${accountId}`, {
+        const response = await fetch(`${url}/${accountId}`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -142,9 +150,51 @@ async function movementCreator(event) {
 }
 
 
+async function undoLastMovement() {
+    try {
+        // 1️⃣ Obtener todos los movimientos en JSON
+        const response = await fetch(`${url}/account/${accountId}`, {
+            headers: { "Accept": "application/json" }
+        });
+
+        if (!response.ok) throw new Error(`Error al obtener movimientos: ${response.status}`);
+
+        const movimientos = await response.json();
+
+        if (movimientos.length === 0) {
+            alert("No hay movimientos para deshacer");
+            return;
+        }
+
+        // 2️⃣ Tomar el último movimiento
+        const lastMovement = movimientos[movimientos.length - 1];
+
+        // 3️⃣ Llamar al backend para borrarlo
+        const deleteResponse = await fetch(`${url}/${lastMovement.id}`, {
+            method: "DELETE",
+            headers: { "Accept": "application/json" }
+        });
+
+        if (!deleteResponse.ok) throw new Error(`No se pudo deshacer el movimiento: ${deleteResponse.status}`);
+
+        // 4️⃣ Recargar la lista
+        await cargarMovimientos();
+        alert("Último movimiento deshecho correctamente");
+
+    } catch (error) {
+        alert("Error: " + error.message);
+    }
+}
+
+// Integración con el botón
+const btnUndoLast = document.querySelector("#list button:nth-of-type(2)");
+btnUndoLast.addEventListener("click", undoLastMovement);
 
 
-const accountId = "2654785441";
+
+
+
+
 document.getElementById("movementForm").reset(); // limpiar formulario
 cargarMovimientos();
 // Selecciona el botón
