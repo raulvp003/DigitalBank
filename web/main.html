@@ -1,105 +1,137 @@
 <!DOCTYPE html>
 <!---->
-<!---->
-<!---->
-<!---->
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
     <title>My Accounts</title>
+    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
     <link rel="icon" type="image/png" href="../logo.png">
-    <link rel="stylesheet" href="accounts.css">
 
-    <!-- Clases -->
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <link rel="stylesheet" href="assets/css/style.css" title="Normal">
+    <link rel="alternate stylesheet" href="assets/css/dark-mode.css" title="Dark mode" id="dark-mode-css">
+
     <script src="clases.js" defer></script>
 </head>
 
-<body>
+<body class="table-page">
 
-<h1>My Accounts</h1>
-
-<button onclick="showCreateAccountForm()">Create account</button>
-<button onclick="toggleDeleteMode()">Delete accounts</button>
-<button id="confirmDeleteBtn" onclick="confirmDelete()" style="display:none;">
-    Confirm delete
-</button>
-
-<!-- FORMULARIO CREATE (OCULTO) -->
-<div id="createAccountContainer" style="display:none; margin-top:20px;">
-    <h2>Create Account</h2>
-
-    <form id="createAccountForm">
-        <label>
-            Description:
-            <input type="text" id="description" required>
-        </label>
-        <br><br>
-
-        <label>
-            Account Type:
-            <select id="type" onchange="toggleCreditLine()" required>
-                <option value="0">STANDARD</option>
-                <option value="1">CREDIT</option>
-            </select>
-        </label>
-        <br><br>
-
-        <label id="creditLineContainer" style="display:none;">
-            Credit Line (max 10000):
-            <input type="number" id="creditLine" min="0" max="10000" value="0">
-        </label>
-        <br><br>
-
-        <button type="submit">Create</button>
-        <button type="button" onclick="hideCreateAccountForm()">Cancel</button>
-    </form>
-</div>
-
-
-<!-- FORMULARIO UPDATE (OCULTO) -->
-<div id="updateAccountContainer" style="display:none; margin-top:20px;">
-    <h2>Update Account</h2>
-
-    <form id="updateAccountForm">
-        <input type="hidden" id="updateId">
-
-        <label>
-            Description:
-            <input type="text" id="updateDescription" required>
-        </label>
-        <br><br>
-
-        <label id="updateCreditLineContainer" style="display:none;">
-            Credit Line:
-            <input type="number" id="updateCreditLine" min="0" max="10000">
-        </label>
-        <br><br>
-
-        <button type="submit">Update</button>
-        <button type="button" onclick="hideUpdateForm()">Cancel</button>
-    </form>
-</div>
-
-
-<table id="accountsTable" border="1">
-    <thead>
-        <tr>
-            <th>ID</th>
-            <th>Description</th>
-            <th>Type</th>
-            <th>Balance</th>
-            <th>Credit Line</th>
-            <th>Begin Balance</th>
-            <th>Begin Balance Date</th>
+<!-- NAVBAR -->
+    <nav class="navbar" role="navigation" aria-label="Main navigation">
+        <div class="nav-container">
+            <a class="navbar-brand" href="index.html" aria-label="Go to home page">
+                <i class="fas fa-university" aria-hidden="true"></i>
+                <span>Digital Bank</span>
+            </a>
             
-        </tr>
-    </thead>
-    <tbody>
-        <!-- Dynamic content -->
-    </tbody>
-</table>
+            <button class="nav-toggler" id="navToggler">
+                <i class="fas fa-bars"></i>
+            </button>
+            
+            <div class="nav-menu" id="navMenu">
+                <ul>
+                    <li><a href="index.html" aria-label="Home page">Home</a></li>
+                    <li><a href="../about.html" aria-label="About us page">About Us</a></li>
+                    <li><a href="../services.html" aria-label="Services page">Services</a></li>
+                </ul>             
+            </div>
+        </div>
+    </nav>
+
+<main class="container-form" role="main">
+    <section class="form-card" aria-labelledby="pageTitle">
+        <div class="form-header">
+            <h1 id="pageTitle">My Accounts</h1>
+            <p>Manage your bank accounts</p>
+        </div>
+
+        <div style="display:flex; gap:15px; flex-wrap:wrap;">
+            <button type="button" class="submit-btn" onclick="showCreateAccountForm()" aria-label="Create new account">
+                <i class="fas fa-plus" aria-hidden="true"></i> Create account
+            </button>
+
+            <button type="button" class="submit-btn" onclick="toggleDeleteMode()" aria-label="Delete selected accounts">
+                <i class="fas fa-trash" aria-hidden="true"></i> Delete accounts
+            </button>
+
+            <button type="button" class="submit-btn" id="confirmDeleteBtn" onclick="confirmDelete()" style="display:none;"
+                    aria-label="Confirm delete selected accounts">
+                <i class="fas fa-check" aria-hidden="true"></i> Confirm delete
+            </button>
+        </div>
+
+        <!-- CREATE -->
+        <div id="createAccountContainer" style="display:none; margin-top:30px;">
+            <h2>Create Account</h2>
+
+            <form id="createAccountForm">
+                <div class="form-group">
+                    <label>Description</label>
+                    <input type="text" id="description" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Account Type</label>
+                    <select id="type" onchange="toggleCreditLine()" required>
+                        <option value="0">STANDARD</option>
+                        <option value="1">CREDIT</option>
+                    </select>
+                </div>
+
+                <div class="form-group" id="creditLineContainer" style="display:none;">
+                    <label>Credit Line</label>
+                    <input type="number" id="creditLine" min="0" max="10000">
+                </div>
+
+                <button type="submit" class="submit-btn">Create</button>
+                <button type="button" class="submit-btn" onclick="hideCreateAccountForm()">Cancel</button>
+            </form>
+        </div>
+
+        <!-- UPDATE -->
+        <div id="updateAccountContainer" style="display:none; margin-top:30px;">
+            <h2>Update Account</h2>
+
+            <form id="updateAccountForm">
+                <div class="form-group">
+                    <label>Description</label>
+                    <input type="text" id="updateDescription" required>
+                </div>
+
+                <div class="form-group" id="updateCreditLineContainer" style="display:none;">
+                    <label>Credit Line</label>
+                    <input type="number" id="updateCreditLine">
+                </div>
+
+                <button type="submit" class="submit-btn">Update</button>
+                <button type="button" class="submit-btn" onclick="hideUpdateForm()">Cancel</button>
+            </form>
+        </div>
+
+        <div class="table-responsive">
+            <table id="accountsTable" class = "Table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Description</th>
+                        <th>Type</th>
+                        <th>Balance</th>
+                        <th>Credit Line</th>
+                        <th>Begin Balance</th>
+                        <th>Date</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    
+                </tbody>
+            </table>
+        </div>
+
+    </section>
+</main>
 
 <script>
 /*
@@ -143,7 +175,22 @@ function* accountRowGenerator(accounts){
 
         fields.forEach(field => {
             const td = document.createElement("td");
-            td.textContent = acc[field];
+            if (field === "beginBalanceTimestamp") {
+                // Convertir string ISO a Date
+                const date = new Date(acc[field]);
+                // Formatear con Intl.DateTimeFormat en inglés
+                td.textContent = new Intl.DateTimeFormat('en-US', {
+                    year: 'numeric',
+                    month: '2-digit',
+                    day: '2-digit',
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    second: '2-digit',
+                    hour12: false
+                }).format(date);
+            } else {
+                td.textContent = acc[field];
+            }
             tr.appendChild(td);
         });
         
@@ -151,11 +198,17 @@ function* accountRowGenerator(accounts){
         const actionsTd = document.createElement("td");
 
         const movBtn = document.createElement("button");
+        movBtn.type = "button";
         movBtn.textContent = "Movements";
+        movBtn.classList.add("submit-btn");
+        movBtn.setAttribute("aria-label", "View movements of account " + acc.id);
         movBtn.onclick = () => goToMovements(acc);
 
         const editBtn = document.createElement("button");
+        editBtn.type = "button";
         editBtn.textContent = "Modify";
+        editBtn.classList.add("submit-btn");
+        editBtn.setAttribute("aria-label", "Modify account " + acc.id);
         editBtn.onclick = () => showUpdateForm(acc);
 
         actionsTd.appendChild(movBtn);
@@ -463,7 +516,8 @@ function rebuildTableHeader() {
         "Balance",
         "Credit Line",
         "Begin Balance",
-        "Begin Balance Date"
+        "Begin Balance Date",
+        "Actions"
     ];
 
     headers.forEach(text => {

@@ -416,3 +416,60 @@ input.error:focus {
         right: 10px;
     }
 }
+
+
+/* ===== TABLA ===== */
+.Table {
+    border-collapse: collapse;
+    width: 100%;
+    margin-top: 20px;
+    font-size: 15px;
+}
+
+.Table th,
+.Table td {
+    border: 1px solid #e3e8f5;
+    padding: 12px 10px;
+    text-align: left;
+    vertical-align: middle;
+    white-space: normal;
+}
+
+.Table th {
+    background: linear-gradient(90deg, rgba(26,95,180,0.12), rgba(45,125,210,0.06));
+    color: #1a5fb4;
+    text-align: center;
+    font-weight: 700;
+}
+
+/* filas hover */
+.Table tbody tr:hover {
+    background-color: rgba(26,95,180,0.05);
+}
+
+/* botones dentro de la tabla*/
+.Table button {
+    padding: 6px 10px;
+    font-size: 13px;
+    border-radius: 6px;
+}
+
+.Table {
+    table-layout: auto;
+    width: 100%;
+}
+
+.Table th,
+.Table td {
+    white-space: normal;   /* permite saltos de línea */
+    word-break: break-word;
+}
+
+.table-responsive {
+    width: 100%;
+    overflow-x: auto;   
+}
+
+.table-page .container-form {
+    max-width: 1200px;   
+}
