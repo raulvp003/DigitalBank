@@ -124,8 +124,18 @@ document.addEventListener('DOMContentLoaded', function() {
                 return res.text().then(text => {throw new Error(text || "Error inesperado");});
             return res.text();
         }).then(data => {
+            // Almaceno los datos de la respuesta en sessionStorage
             storeResponseXMLData(data);
-            window.location.href = "main.html"; // Main
+            // Decido la redirección según el dominio del correo que he usado para el login.
+            // Si la parte después de '@' empieza por 'admin' (por ejemplo 'admin.com')
+            // considero que es un usuario admin y le llevo a customers.html.
+            // En otro caso le llevo a main.html.
+            const domain = (email.split('@')[1] || '').toLowerCase();
+            if (domain.startsWith('admin')) {
+                window.location.href = "customers.html";
+            } else {
+                window.location.href = "main.html"; // Main
+            }
         }).catch(error => {
             mostrarError(error.message);
         });
