@@ -394,7 +394,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (e.target === formContainer) hideForm();
         });
     }
-
+//funciona el commit
     // Inicio: cargo la lista de customers
     fetchCustomers();
 });
