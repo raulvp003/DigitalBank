@@ -24,11 +24,7 @@
             <a class="navbar-brand" href="index.html" aria-label="Go to home page">
                 <i class="fas fa-university" aria-hidden="true"></i>
                 <span>Digital Bank</span>
-            </a>
-            
-            <button class="nav-toggler" id="navToggler">
-                <i class="fas fa-bars"></i>
-            </button>
+            </a>            
             
             <div class="nav-menu" id="navMenu">
                 <ul>
@@ -68,25 +64,25 @@
 
             <form id="createAccountForm">
                 <div class="form-group">
-                    <label>Description</label>
-                    <input type="text" id="description" required>
+                    <label for="description">Description</label>
+                    <input type="text" id="description" name="description" required>
                 </div>
 
                 <div class="form-group">
-                    <label>Account Type</label>
-                    <select id="type" onchange="toggleCreditLine()" required>
+                    <label for="type">Account Type</label>
+                    <select id="type" name="type" onchange="toggleCreditLine()" required>
                         <option value="0">STANDARD</option>
                         <option value="1">CREDIT</option>
                     </select>
                 </div>
 
                 <div class="form-group" id="creditLineContainer" style="display:none;">
-                    <label>Credit Line</label>
-                    <input type="number" id="creditLine" min="0" max="10000">
+                    <label for="creditLine">Credit Line</label>
+                    <input type="number" id="creditLine" name="creditLine" min="0" max="10000">
                 </div>
 
-                <button type="submit" class="submit-btn">Create</button>
-                <button type="button" class="submit-btn" onclick="hideCreateAccountForm()">Cancel</button>
+                <button type="submit" class="submit-btn" aria-label="Create account">Create</button>
+                <button type="button" class="submit-btn" onclick="hideCreateAccountForm()" aria-label="Cancel account creation">Cancel</button>
             </form>
         </div>
 
@@ -96,17 +92,17 @@
 
             <form id="updateAccountForm">
                 <div class="form-group">
-                    <label>Description</label>
-                    <input type="text" id="updateDescription" required>
+                    <label for="updateDescription">Description</label>
+                    <input type="text" id="updateDescription" name="updateDescription" required>
                 </div>
 
                 <div class="form-group" id="updateCreditLineContainer" style="display:none;">
-                    <label>Credit Line</label>
-                    <input type="number" id="updateCreditLine">
+                    <label for="updateCreditLine">Credit Line</label>
+                    <input type="number" id="updateCreditLine" name="updateCreditLine" min="0" max="10000">
                 </div>
 
-                <button type="submit" class="submit-btn">Update</button>
-                <button type="button" class="submit-btn" onclick="hideUpdateForm()">Cancel</button>
+                <button type="submit" class="submit-btn" aria-label="Update account">Update</button>
+                <button type="button" class="submit-btn" onclick="hideUpdateForm()" aria-label="Cancel account update">Cancel</button>
             </form>
         </div>
 
@@ -114,14 +110,14 @@
             <table id="accountsTable" class = "Table">
                 <thead>
                     <tr>
-                        <th>ID</th>
-                        <th>Description</th>
-                        <th>Type</th>
-                        <th>Balance</th>
-                        <th>Credit Line</th>
-                        <th>Begin Balance</th>
-                        <th>Date</th>
-                        <th>Actions</th>
+                        <th scope="col">ID</th>
+                        <th scope="col">Description</th>
+                        <th scope="col">Type</th>
+                        <th scope="col">Balance</th>
+                        <th scope="col">Credit Line</th>
+                        <th scope="col">Begin Balance</th>
+                        <th scope="col">Date</th>
+                        <th scope="col">Actions</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -158,6 +154,7 @@ function* accountRowGenerator(accounts){
             checkbox.type = "checkbox";
             checkbox.value = acc.id;
             checkbox.classList.add("delete-checkbox");
+            checkbox.setAttribute("aria-label", "Select account " + acc.id);
 
             checkTd.appendChild(checkbox);
             tr.appendChild(checkTd);
@@ -505,6 +502,7 @@ function rebuildTableHeader() {
 
     if (deleteMode) {
         const th = document.createElement("th");
+        th.setAttribute("scope", "col");
         th.textContent = "";
         thead.appendChild(th);
     }
@@ -523,6 +521,7 @@ function rebuildTableHeader() {
     headers.forEach(text => {
         const th = document.createElement("th");
         th.textContent = text;
+        th.setAttribute("scope", "col");
         thead.appendChild(th);
     });
 }
