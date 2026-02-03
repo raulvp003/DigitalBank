@@ -157,9 +157,39 @@ async function movementCreator(event) {
 }
 
 
+async function recargaCuenta(movimientos) {
+    // Obtener la cuenta completa
+    const accountResponse = await fetch(`http://localhost:8080/CRUDBankServerSide/webresources/account/${accountId}`, {
+        headers: { "Accept": "application/json" }
+    });
+
+    if (!accountResponse.ok) throw new Error("No se pudo obtener la cuenta para actualizar");
+
+    const account = await accountResponse.json();
+
+    // Calcular el nuevo balance
+    const newBalance = movimientos.length > 1
+        ? movimientos[movimientos.length - 2].balance
+        : 0;
+
+    account.balance = newBalance;
+
+    // Enviar PUT con la cuenta completa
+    const updateResponse = await fetch(`http://localhost:8080/CRUDBankServerSide/webresources/account`, {
+        method: "PUT",
+        headers: {
+            "Content-Type": "application/json",
+            "Accept": "application/json"
+        },
+        body: JSON.stringify(account)
+    });
+
+    if (!updateResponse.ok) throw new Error("Error actualizando el balance de la cuenta");
+}
+
 async function undoLastMovement() {
     try {
-        //  Obtener todos los movimientos en JSON
+        // Obtener movimientos
         const response = await fetch(`${url}/account/${accountId}`, {
             headers: { "Accept": "application/json" }
         });
@@ -173,10 +203,9 @@ async function undoLastMovement() {
             return;
         }
 
-        // Tomar el último movimiento
+        // Borrar último movimiento
         const lastMovement = movimientos[movimientos.length - 1];
 
-        //  Llamar al backend para borrarlo
         const deleteResponse = await fetch(`${url}/${lastMovement.id}`, {
             method: "DELETE",
             headers: { "Accept": "application/json" }
@@ -184,15 +213,18 @@ async function undoLastMovement() {
 
         if (!deleteResponse.ok) throw new Error(`No se pudo deshacer el movimiento: ${deleteResponse.status}`);
 
-        // Recargar la lista
+        // Actualizar balance de la cuenta
+        await recargaCuenta(movimientos);
+
+        // Recargar lista
         await cargarMovimientos();
+
         alert("Último movimiento deshecho correctamente");
 
     } catch (error) {
         alert("Error: " + error.message);
     }
 }
-
 // Integración con el botón
 document.getElementById("btnUndoMovement").addEventListener("click", undoLastMovement);
 
