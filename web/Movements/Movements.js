@@ -16,27 +16,34 @@ async function cargarMovimientos() {
         movimientos = await response.json();
 
         movimientos.forEach(m => {
-            const li = document.createElement('li');
-            const amount = parseFloat(m.amount);
-            li.className = amount >= 0 ? "income" : "expense";
-
-            let formattedTimestamp = m.timestamp
-                ? new Date(m.timestamp).toLocaleString()
-                : '';
-
-            li.innerHTML = `
-                <span>${m.id}</span>
-                <span>${m.amount}</span>
-                <span>${m.balance}</span>
-                <span>${formattedTimestamp}</span>
-                <span>${m.description}</span>
+            const tr = document.createElement("tr");
+            
+            let formattedTimestamp = m.timestamp ? new Date(m.timestamp).toLocaleString() : '';
+            
+            tr.innerHTML = `
+              <td>${m.id}</td>
+              <td>${m.amount.toFixed(2)}</td>
+              <td>${m.balance.toFixed(2)}</td>
+              <td>${formattedTimestamp}</td>
+              <td>${m.description}</td>
             `;
-            lista.appendChild(li);
+            
+            if (m.amount >= 0) {
+                tr.classList.add("income");
+            } else {
+                tr.classList.add("expense");
+    }
+        document.getElementById("movementsList").appendChild(tr);
+
+
         });
 
     } catch (error) {
         console.error('Error al obtener movimientos:', error);
-        lista.innerHTML = `<li>Error: ${error.message}</li>`;
+        lista.innerHTML = `
+        <tr>
+            <td colspan="5">Error: ${error.message}</td>
+        </tr>`;
     }
 
     // Último balance
@@ -99,7 +106,7 @@ async function movementCreator(event) {
        const previousBalance = await cargarMovimientos();
 
 
-        // 3️⃣ Calcular nuevo balance
+        // Calcular nuevo balance
         let totalBalance;
 
         if (operation === "Deposit") {
@@ -113,7 +120,7 @@ async function movementCreator(event) {
             throw new Error("Invalid operation");
         }
 
-        // 4️⃣ Crear objeto movimiento
+        // Crear objeto movimiento
         const movementData = {
             amount: operation === "Payment" ? -amount : amount,
             balance: totalBalance,
@@ -121,7 +128,7 @@ async function movementCreator(event) {
             timestamp: new Date().toISOString()
         };
 
-        // 5️⃣ Enviar a la BBDD
+        // Enviar a la BBDD
         const response = await fetch(`${url}/${accountId}`, {
             method: "POST",
             headers: {
@@ -136,7 +143,7 @@ async function movementCreator(event) {
             throw new Error(errorText || "Error creating movement");
         }
 
-        // 6️⃣ Cerrar modal, limpiar y recargar desde backend
+        // Cerrar modal, limpiar y recargar desde backend
         document.getElementById("movementForm").reset();
         document.getElementById("movementModal").style.display = "none";
 
@@ -152,7 +159,7 @@ async function movementCreator(event) {
 
 async function undoLastMovement() {
     try {
-        // 1️⃣ Obtener todos los movimientos en JSON
+        //  Obtener todos los movimientos en JSON
         const response = await fetch(`${url}/account/${accountId}`, {
             headers: { "Accept": "application/json" }
         });
@@ -166,10 +173,10 @@ async function undoLastMovement() {
             return;
         }
 
-        // 2️⃣ Tomar el último movimiento
+        // Tomar el último movimiento
         const lastMovement = movimientos[movimientos.length - 1];
 
-        // 3️⃣ Llamar al backend para borrarlo
+        //  Llamar al backend para borrarlo
         const deleteResponse = await fetch(`${url}/${lastMovement.id}`, {
             method: "DELETE",
             headers: { "Accept": "application/json" }
@@ -177,7 +184,7 @@ async function undoLastMovement() {
 
         if (!deleteResponse.ok) throw new Error(`No se pudo deshacer el movimiento: ${deleteResponse.status}`);
 
-        // 4️⃣ Recargar la lista
+        // Recargar la lista
         await cargarMovimientos();
         alert("Último movimiento deshecho correctamente");
 
@@ -187,8 +194,8 @@ async function undoLastMovement() {
 }
 
 // Integración con el botón
-const btnUndoLast = document.querySelector("#list button:nth-of-type(2)");
-btnUndoLast.addEventListener("click", undoLastMovement);
+document.getElementById("btnUndoMovement").addEventListener("click", undoLastMovement);
+
 
 
 
