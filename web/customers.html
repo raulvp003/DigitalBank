@@ -30,8 +30,8 @@
           <div class="nav-menu" id="navMenu">
               <ul>
                   <li><a href="index.html">Home</a></li>
-                  <li><a href="../about.html">About Us</a></li>
-                  <li><a href="../services.html">Services</a></li>
+                  <li><a href="../main.html">Accounts</a></li>
+                  <li><a href="../MovementsPage.html">Movements</a></li>
               </ul>
           </div>
       </div>
@@ -45,7 +45,7 @@
       </div>
 
       <div class="actions-row">
-        <button class="submit-btn" id="createCustomerBtn">Crear Customer</button>
+        <button class="submit-btn" id="createCustomerBtn">Create Customer</button>
 
         
       </div>
@@ -64,7 +64,7 @@
               <th>Zip</th>
               <th>Phone</th>
               <th>Email</th>
-              <th>Acciones</th>
+              <th>Actions</th>
             </tr>
           </thead>
           <tbody></tbody>
@@ -73,26 +73,65 @@
 
       <div id="customersMsg" class="alert-message" style="display:none; margin-top:12px"></div>
 
-      <!-- Modal popup para crear/editar customer. Se muestra/oculta añadiendo/removiendo la clase .hidden -->
       <div id="formContainer" class="modal mt-30 hidden" aria-hidden="true">
         <div class="modal-content form-card" role="dialog" aria-modal="true">
-          <h2 id="formTitle">Crear Customer</h2>
+          <h2 id="formTitle">Create Customer</h2>
           <form id="customerForm">
             <input type="hidden" id="id">
-            <div class="form-group"><input type="text" id="firstName" placeholder="First Name" required></div>
-            <div class="form-group"><input type="text" id="lastName" placeholder="Last Name" required></div>
-            <div class="form-group"><input type="text" id="middleInitial" placeholder="Middle Initial"></div>
-            <div class="form-group"><input type="text" id="street" placeholder="Street"></div>
-            <div class="form-group"><input type="text" id="city" placeholder="City"></div>
-            <div class="form-group"><input type="text" id="state" placeholder="State"></div>
-            <div class="form-group"><input type="text" id="zip" placeholder="Zip"></div>
-            <div class="form-group"><input type="text" id="phone" placeholder="Phone"></div>
-            <div class="form-group"><input type="email" id="email" placeholder="Email"></div>
+              <div id="formMsg" class="alert-message" style="display:none; margin-bottom:12px"></div>
+              <div class="form-group">
+                <input type="text" id="firstName" placeholder="First Name" required>
+                <div id="firstNameError" class="error-message"><i class="fas fa-exclamation-circle"></i><span></span></div>
+              </div>
+              <div class="form-group">
+                <input type="text" id="lastName" placeholder="Last Name" required>
+                <div id="lastNameError" class="error-message"><i class="fas fa-exclamation-circle"></i><span></span></div>
+              </div>
+              <div class="form-group">
+                <input type="text" id="middleInitial" placeholder="Middle Initial">
+                <div id="middleInitialError" class="error-message"><i class="fas fa-exclamation-circle"></i><span></span></div>
+              </div>
+              <div class="form-group">
+                <input type="text" id="street" placeholder="Street">
+                <div id="streetError" class="error-message"><i class="fas fa-exclamation-circle"></i><span></span></div>
+              </div>
+              <div class="form-group">
+                <input type="text" id="city" placeholder="City">
+                <div id="cityError" class="error-message"><i class="fas fa-exclamation-circle"></i><span></span></div>
+              </div>
+              <div class="form-group">
+                <input type="text" id="state" placeholder="State">
+                <div id="stateError" class="error-message"><i class="fas fa-exclamation-circle"></i><span></span></div>
+              </div>
+              <div class="form-group">
+                <input type="text" id="zip" placeholder="Zip">
+                <div id="zipError" class="error-message"><i class="fas fa-exclamation-circle"></i><span></span></div>
+              </div>
+              <div class="form-group">
+                <input type="text" id="phone" placeholder="Phone">
+                <div id="phoneError" class="error-message"><i class="fas fa-exclamation-circle"></i><span></span></div>
+              </div>
+              <div class="form-group">
+                <input type="email" id="email" placeholder="Email">
+                <div id="emailError" class="error-message"><i class="fas fa-exclamation-circle"></i><span></span></div>
+              </div>
             <div style="margin-top:10px; display:flex; gap:10px;">
-              <button type="submit" class="submit-btn">Guardar</button>
-              <button type="button" class="submit-btn" id="cancelCustomerBtn">Cancelar</button>
+              <button type="submit" class="submit-btn">Save</button>
+              <button type="button" class="submit-btn" id="cancelCustomerBtn">Cancel</button>
             </div>
           </form>
+        </div>
+      </div>
+      
+  <!-- Delete confirmation modal -->
+      <div id="confirmContainer" class="modal mt-30 hidden" aria-hidden="true">
+        <div class="modal-content form-card" role="dialog" aria-modal="true">
+          <h3>Confirmation</h3>
+          <p id="confirmMessage">Do you want to delete this customer?</p>
+          <div style="margin-top:12px; display:flex; gap:10px; justify-content:center;">
+            <button type="button" class="submit-btn" id="confirmYesBtn">Yes</button>
+            <button type="button" class="submit-btn" id="confirmNoBtn">No</button>
+          </div>
         </div>
       </div>
     </div>
