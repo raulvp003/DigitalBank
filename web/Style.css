@@ -1,7 +1,6 @@
-/* ===== MOVEMENTS CSS LIMPIO ===== */
+/* ===== MOVEMENTS CSS  ===== */
 
-/* Tabla de movimientos */
-/* Movements existentes */
+
 #movementsList {
     padding: 0;
     margin: 20px auto;
@@ -17,7 +16,7 @@
     background-color: #f7d4d4;
 }
 
-/* --- NUEVO CSS PARA HACER CONTENEDOR MÁS GRANDE Y TABLA MÁS LIBRE --- */
+
 .container-form.table-page {
     max-width: 1200px; /* ancho mayor */
     width: 95%;        /* ocupa casi todo el ancho disponible */
@@ -491,7 +490,7 @@ input.error:focus {
 }
 
 /* ===== TABLE (shared) ===== */
-/* CSS provided by your compañero — used for all table pages */
+
 .Table {
     border-collapse: collapse;
     width: 100%;

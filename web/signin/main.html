@@ -1,172 +1,55 @@
 <!DOCTYPE html>
 <html lang="es">
-<head>
-    <title>Main Page Bank</title>
-    <meta charset="UTF-8">
-    <meta name = "viewport" content = "width = device-width, initial-scale = 1.0">
-    <link rel="icon" type="image/png" href="../logo.png">
-    <link rel="stylesheet" href="../darkMode.css"><!-- Archivo CSS alternativo. Modo oscuro. -->
-    <script type="text/javascript" src="../darkMode.js" defer></script><!-- Archivo js alternativo. Modo oscuro. -->
-    <style type="text/css">
-        body{
-            /*border: 1px solid red;*/
-            height: 99.8vh;
-            margin: 0;
+    <head>
+        <title>Main Page Bank</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="../Style.css"> 
 
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+        <link rel="alternate stylesheet" href="assets/css/dark-mode.css" title="Dark mode" id="dark-mode-css">
+    </head>
 
-            background-image: url("https://wallpapers.com/images/hd/stock-market-background-wdb83di320cjbktg.jpg");
-        }
+    <body style="background: url('../Bank.png')  no-repeat center center fixed; background-size: cover;">
 
-        .cabecera{
-            /*border: 1px solid greenyellow;*/
-            background-color: #add8e6b6;
-            border-bottom: 5px double lightblue;
-            flex: 1;
-            padding: 15px 30px;
-
-            display: flex;
-            flex-direction: row;
-            justify-content: space-between;
-            align-items: center;
-        }
-        .imagen{
-            height: 60px;
-            /*border: 1px solid blue;*/
-            border-radius: 0px;
-            box-shadow: 0 0 10px white;
-            transition: transform 0.5s;
-            z-index: 2;
-        }
-        .imagen:hover{
-            transform: scale(1.1);
-        }
-
-        .usuario{
-            /*border:1px solid red;*/
-            position: relative;
-            display: flex;
-            flex-direction: column;
-            margin: 0px 15px;
-        }
-
-        .ajustes{
-            border: 1px 10px solid #ccc;
-            border-radius: 10px;
-            background-color: #E3D8DE;
-            color: #403d3d;
-            padding: 5px 15px;
-            
-            display: flex;
-            justify-content: center;
-            margin-right: 100px; 
-            font-size: 20px;
-            cursor: pointer;
-            transition: transform 0.3s, box-shadow 0.3s;  
-        }
-        .ajustes:hover {
-            transform: scale(1.1);
-            box-shadow: 0 0 15px lightblue;
-        }
-
-        .menu{
-            border: 1px solid #ccc;
-            border-radius: 15px;
-            background-color: #E3D8DE;
-            padding: 4px;          
-
-            position: absolute;
-            top: 42px;
-            right: 95px;
-
-            display: flex;
-            flex-direction: column;
-            
-            box-shadow: 0 0 15px #00bfff50;
-
-            visibility: hidden;     /* El menú empieza oculto */
-            opacity: 0;             /* El menú es completamente invisible */
-            transition: opacity 0.3s, visibility 0.3s;
-        }
-        .menu.show {
-            visibility: visible;    
-            opacity: 1;             
-        }
-
-        .eleccion{
-            border: transparent;
-            border-bottom: 1px solid black;
-            background-color: #E3D8DE;
-            color: #403d3d;
-            padding: 10px 20px;
-
-            text-decoration: none;
-            cursor: pointer;
-            white-space: nowrap;        /*Prevenir el salto de línea*/
-
-            transition: background-color 0.5s;
-        }
-        .eleccion:hover {
-            background-color: #00bfff33;
-        }
-        .eleccion:last-child {
-            border-bottom: none;
-        }
-
-
-        .cuerpo{
-            /*border: 1px solid greenyellow;*/
-            color: white;
-            flex: 9;
-
-            display: flex;
-            justify-content: center;
-            align-items: center;    
-        }
-        .bienvenido{
-            background-color: #E3D8DE;
-            border-radius: 30px;
-            border: 7.5px double lightblue;
-            padding: 50px;
-            text-align: center;
-        }
-        .bienvenido h1{
-            color: black;
-        }
-        .bienvenido p{
-            color: black;
-            font-size: 25px;
-        }
-    </style>
-</head>
-
-
-<body>
+    <!-- Dark mode button -->
     <img id="darkModeToggle" src="../moon.png" alt="dark mode">
-    <div class="cabecera">
-        <img class="imagen" src="../logo.png">
-        <div class="usuario" id="usuario">
-            <div class="ajustes" id="ajustes">Settings</div>
-            <div class="menu" id="menu">
-                <a href="ChangePassword/CambioContraseña.html" class="eleccion">Change Password</a>
-                <button id="cerrarSesion" class="eleccion">Log out</button>
+
+    <!-- ===== NAVBAR ===== -->
+    <nav class="navbar">
+            <div class="nav-container">
+                <a class="navbar-brand" href="main.html">
+                    <i class="fas fa-university"></i>
+                    <span>Digital Bank</span>
+                </a>
+
+                <button class="nav-toggler" id="navToggler">
+                    <i class="fas fa-bars"></i>
+                </button>
+
+                <div class="nav-menu" id="navMenu">
+                    <ul>
+                        <li><a href="index.html">Home</a></li>
+                        <li><a href="../about.html">About Us</a></li>
+                        <li><a href="../services.html">Services</a></li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+
+    <!-- ===== MAIN CONTENT ===== -->
+    <div class="container-form" style="position: absolute; top: 40%; left: 50%; transform: translate(-50%, -50%); width: 60%;">
+        <div class="form-card">
+            <div class="form-header">
+                <div class="form-logo" style="width: 80px; height: 80px; background: url('https://cdn.prod.website-files.com/639ff8596ae419fae300b099/641017314cc67fbb88c517a7_good-linkedin-profile-photo-right-expression-1000x1000.jpeg') no-repeat center center; background-size: cover;"></div>
+
+                <h1>Welcome, <span id="nombreUsuario"></span></h1>
+                <p>Access your bank account information, transactions, and more.</p>
             </div>
         </div>
-
     </div>
-    <div class="cuerpo">
-        <div class="bienvenido">
-            <h1>¡Welcome, <span id="nombreUsuario"></span>!</h1>
-            <p>Access your bank account information, transactions, and more :D.</p>
-        </div>
-    </div>
-    
     <script>
-        /*if (!sessionStorage.getItem("customer.id")) {
-            window.location.href = "../index.html"; 
-        }*/
+        
     
         const usuario = document.getElementById("usuario");
         const ajustes = document.getElementById("ajustes");
@@ -193,5 +76,6 @@
 
         
     </script>
+
 </body>
 </html>
