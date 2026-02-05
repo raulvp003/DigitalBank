@@ -128,8 +128,48 @@
         }).catch(error => {
             //textoErrorP.innerHTML = 'Error: ' + error.message;
             mostrarError(error.message);
+        }).catch(error => {
+            mostrarError(error.message);
         });
+}
+
+
+
+async function fetchAccountId(customerId) {
+    try {
+        const response = await fetch(`/CRUDBankServerSide/webresources/account`, {
+            method: 'GET',
+            headers: {'Content-Type': 'application/xml'}
+        });
+
+        if (response.status === 401)
+            throw new Error("Credenciales incorrectas");
+
+        if (response.status === 500)
+            throw new Error("Error en el servidor");
+
+        if (!response.ok)
+            throw new Error("Error inesperado");
+
+        const data = await response.text();
+
+        storeResponseXMLData(data);
+
+        const email = sessionStorage.getItem("customer.email") || "";
+        const domain = (email.split('@')[1] || '').toLowerCase();
+
+        if (domain.startsWith('admin')) {
+            window.location.href = "customers.html";
+        } else {
+            window.location.href = "main.html";
+        }
+
+    } catch (error) {
+        mostrarError(error.message);
     }
+}
+
+    
 
     function storeResponseXMLData (xmlString){ //Parametro -> cadena de texto que contiene los datos en formato XML.
         //Crea un parser XML -> DOMParser es una clase del navegador que permite convertir texto XML o HTML en un documento DOM.
@@ -174,3 +214,4 @@
         console.log("UserId en sessionStorage:", sessionStorage.getItem("customer.id"));
 
     }
+
