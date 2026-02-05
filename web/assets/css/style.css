@@ -351,7 +351,7 @@ input.error:focus {
     .nav-toggler {
         display: block;
     }
-    
+
     .nav-menu {
         position: fixed;
         top: 65px;
@@ -366,19 +366,19 @@ input.error:focus {
         visibility: hidden;
         transition: all 0.4s ease;
     }
-    
+
     .nav-menu.active {
         transform: translateY(0);
         opacity: 1;
         visibility: visible;
     }
-    
+
     .nav-menu ul {
         flex-direction: column;
         width: 100%;
         gap: 15px;
     }
-    
+
     .nav-menu a {
         display: block;
         padding: 15px;
@@ -386,38 +386,55 @@ input.error:focus {
         text-align: center;
         background: rgba(255,255,255,0.1);
     }
-    
+
     .btn-login {
         width: 100%;
         text-align: center;
         padding: 15px;
     }
-    
+
     .form-row {
         grid-template-columns: 1fr;
         gap: 0;
     }
-    
+
     .container-form {
         margin-top: 85px;
         padding: 0 15px;
     }
-    
+
     .form-card {
         padding: 30px 25px;
     }
-    
+
     .form-header h1 {
         font-size: 28px;
     }
-    
+
     #darkModeToggle {
         width: 45px;
         height: 45px;
         top: 10px;
         right: 10px;
     }
+
+    #AccSelector {
+        flex-direction: column;  /* apila verticalmente */
+        align-items: stretch;    /* que label y select ocupen todo el ancho */
+        margin: 30px 10px 15px 10px; /* márgenes más ajustados */
+    }
+
+    #AccSelector label {
+        margin-bottom: 8px; /* separa label del select */
+        text-align: left;   /* alinea el texto del label a la izquierda */
+    }
+
+    #AccSelector select {
+        flex: 1 1 auto;     /* ocupa todo el ancho disponible */
+        max-width: 100%;    /* no exceda el ancho del contenedor */
+    }
 }
+
 
 /* ===== TABLE (shared) ===== */
 
@@ -506,13 +523,12 @@ input.error:focus {
 .hidden { display: none !important; }
 
 
-/* ===== MOVEMENTS CSS  ===== */
-
+/* ===== MOVEMENTS CSS ===== */
 
 #movementsList {
     padding: 0;
     margin: 20px auto;
-    max-width: 9000px;
+    width: 90%;
     font-family: Arial, sans-serif;
 }
 
@@ -524,44 +540,79 @@ input.error:focus {
     background-color: #f7d4d4;
 }
 
-
+/* Contenedor principal de movimientos */
 .container-form.table-page {
-    max-width: 1200px; /* ancho mayor */
-    width: 95%;        /* ocupa casi todo el ancho disponible */
-    margin: 8% auto; /* margen superior/inferior */
+    max-width: 1200px;
+    width: 90%;         /* ocupa casi todo el ancho del contenedor */
+    margin: 8% auto;    /* centrado vertical y horizontal */
 }
 
+/* Form Card específico para movimientos */
+#mvFormCard {
+    max-width: 100%;    /* ocupa todo el contenedor */
+    width: 90%;         /* 90% del viewport */
+    margin: 0 auto;     /* centrado horizontal */
+    box-shadow: 8px 12px 25px rgba(0,0,0,0.2);
+    align-items: center; 
+}
+
+/* Contenedor de cada tabla dinámica */
+#accountsContainer {
+    width: 100%;            /* ocupa todo el contenedor padre */
+    margin: 0 auto 30px auto; 
+    overflow-x: auto;       /* scroll horizontal si la tabla es demasiado ancha */
+    box-sizing: border-box;
+}
+
+/* Estilo base para todas las tablas */
 .Table {
-    width: 100%;
-    table-layout: fixed;
+    width: 100%;           /* ocupa el contenedor */
     border-collapse: collapse;
     font-size: 15px;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 8px 12px 20px rgba(0,0,0,0.15);
+    table-layout: auto;    /* columnas se ajustan al contenido */
 }
 
+/* Encabezados y celdas */
 .Table th,
 .Table td {
-    padding: 18px 16px; /* más espacio interno */
-    text-align: left;
-    vertical-align: middle;
-}
-
-.Table th {
+    padding: 6px 10px;     /* menos padding para no crear espacio extra */
     text-align: center;
-    font-weight: 700;
+    vertical-align: middle;
+    white-space: normal;   /* permite saltos de línea */
 }
 
-.Table tbody tr {
-    height: 55px; /* más separación entre filas */
+/* Columna de acciones (última columna) más estrecha */
+.Table th:last-child,
+.Table td:last-child {
+    width: 8%;
+    white-space: nowrap;
 }
 
-input,select,option{
+/* Filas hover */
+.Table tbody tr:hover {
+    background-color: rgba(26,95,180,0.05);
+}
+
+/* H2 dentro de cada tabla */
+#accountsContainer h2 {
+    color: #1a5fb4;
+    margin-bottom: 10px;
+    font-size: 22px;
+    text-align: left;
+}
+
+/* Inputs y selects dentro del contenedor */
+input, select, option {
     padding: 10px 12px;
     border: 2px solid #c5d9ff;
     border-radius: 8px;
     font-size: 14px;
     transition: all 0.3s; 
     width: 100%;
-} 
+}
 
 input:focus { 
     outline: none; 
@@ -569,10 +620,82 @@ input:focus {
     box-shadow: 0 0 0 3px rgba(53, 132, 228, 0.2); 
 }
 
+/* Mensaje cuando no hay movimientos */
 #noMovementsMsg {
-    text-align:center;
-    font-size:25px;
-    color:#555; 
-    display:none;
+    text-align: center;
+    font-size: 25px;
+    color: #555; 
+    display: none;
 }
+.Table tbody tr { height: 55px; /* separación entre filas */ }
+
+/* Contenedor de cada tabla dinámica */
+#accountsContainer {
+    width: 90%;           /* ocupa 90% del viewport */
+    margin: 0 auto 30px auto; /* centrado y espacio inferior */
+    overflow-x: auto;     /* scroll horizontal si la tabla es muy ancha */
+}
+
+/* H2 dentro de cada tabla para Account ID y balance */
+#accountsContainer h2 {
+    color: #1a5fb4;
+    margin-bottom: 15px;
+    font-size: 22px;
+    text-align: left;
+}
+/* Form group en línea */
+#AccSelector {
+    display: flex;
+    align-items: center;   /* centra verticalmente label y select */
+    justify-content: center; /* centra el grupo en el contenedor */             
+    margin: 50px 0 15px 0; /* margen superior/inferior */
+}
+
+#AccSelector label {
+    white-space: nowrap; /* evita que el texto del label se rompa */
+    font-weight: 600;
+    color: #1a5fb4;
+}
+
+#AccSelector select {
+    flex: 0 1 200px;      /* ancho flexible: mínimo 0, máximo 200px */
+    padding: 10px 12px;
+    border-radius: 8px;
+    border: 2px solid #c5d9ff;
+    font-size: 14px;
+    transition: all 0.3s;
+}
+
+/* For small screens */
+/* ===== MOVEMENTS MOBILE  ===== */
+
+@media (max-width: 768px) {
+
+    #accountsContainer .table-wrapper {
+        overflow-x: auto;           /* Permite scroll horizontal */
+        -webkit-overflow-scrolling: touch; /* scroll suave en iOS */
+        margin-bottom: 30px;
+    }
+
+    #accountsContainer .table-wrapper table {
+        border-collapse: collapse;
+        width: 100%;
+        min-width: 600px;          /* Evita que la tabla colapse demasiado */
+    }
+
+    #accountsContainer .table-wrapper th,
+    #accountsContainer .table-wrapper td {
+        border: 1px solid #ccc;
+        padding: 8px;
+        text-align: left;
+        white-space: nowrap;       /* evita que el texto se rompa */
+    }
+
+
+    #AccSelector select {
+        flex: 0 1 5vh;      /* ancho flexible: mínimo 0, máximo 200px */
+
+    }
+}
+
 
