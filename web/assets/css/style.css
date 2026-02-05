@@ -449,7 +449,7 @@ input.error:focus {
     background-color: rgba(26,95,180,0.05);
 }
 
-/* botones dentro de la tabla (si luego pones) */
+/* botones dentro de la tabla*/
 .Table button {
     padding: 6px 10px;
     font-size: 13px;
