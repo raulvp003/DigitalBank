@@ -1,73 +1,3 @@
-/* ===== MOVEMENTS CSS  ===== */
-
-
-#movementsList {
-    padding: 0;
-    margin: 20px auto;
-    max-width: 9000px;
-    font-family: Arial, sans-serif;
-}
-
-.Table tr.income:hover {
-    background-color: #d4f7d4;
-}
-
-.Table tr.expense:hover {
-    background-color: #f7d4d4;
-}
-
-
-.container-form.table-page {
-    max-width: 1200px; /* ancho mayor */
-    width: 95%;        /* ocupa casi todo el ancho disponible */
-    margin: 8% auto; /* margen superior/inferior */
-}
-
-.Table {
-    width: 100%;
-    table-layout: fixed;
-    border-collapse: collapse;
-    font-size: 15px;
-}
-
-.Table th,
-.Table td {
-    padding: 18px 16px; /* más espacio interno */
-    text-align: left;
-    vertical-align: middle;
-}
-
-.Table th {
-    text-align: center;
-    font-weight: 700;
-}
-
-.Table tbody tr {
-    height: 55px; /* más separación entre filas */
-}
-
-input,select,option{
-    padding: 10px 12px;
-    border: 2px solid #c5d9ff;
-    border-radius: 8px;
-    font-size: 14px;
-    transition: all 0.3s; 
-    width: 100%;
-} 
-
-input:focus { 
-    outline: none; 
-    border-color: #3584e4; 
-    box-shadow: 0 0 0 3px rgba(53, 132, 228, 0.2); 
-}
-
-
-
-
-
-
-
-
 
 /* ===== BASE ===== */
 * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -576,6 +506,73 @@ input.error:focus {
 .hidden { display: none !important; }
 
 
+/* ===== MOVEMENTS CSS  ===== */
 
 
+#movementsList {
+    padding: 0;
+    margin: 20px auto;
+    max-width: 9000px;
+    font-family: Arial, sans-serif;
+}
+
+.Table tr.income:hover {
+    background-color: #d4f7d4;
+}
+
+.Table tr.expense:hover {
+    background-color: #f7d4d4;
+}
+
+
+.container-form.table-page {
+    max-width: 1200px; /* ancho mayor */
+    width: 95%;        /* ocupa casi todo el ancho disponible */
+    margin: 8% auto; /* margen superior/inferior */
+}
+
+.Table {
+    width: 100%;
+    table-layout: fixed;
+    border-collapse: collapse;
+    font-size: 15px;
+}
+
+.Table th,
+.Table td {
+    padding: 18px 16px; /* más espacio interno */
+    text-align: left;
+    vertical-align: middle;
+}
+
+.Table th {
+    text-align: center;
+    font-weight: 700;
+}
+
+.Table tbody tr {
+    height: 55px; /* más separación entre filas */
+}
+
+input,select,option{
+    padding: 10px 12px;
+    border: 2px solid #c5d9ff;
+    border-radius: 8px;
+    font-size: 14px;
+    transition: all 0.3s; 
+    width: 100%;
+} 
+
+input:focus { 
+    outline: none; 
+    border-color: #3584e4; 
+    box-shadow: 0 0 0 3px rgba(53, 132, 228, 0.2); 
+}
+
+#noMovementsMsg {
+    text-align:center;
+    font-size:25px;
+    color:#555; 
+    display:none;
+}
 

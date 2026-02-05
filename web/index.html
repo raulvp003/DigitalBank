@@ -4,30 +4,93 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Home - Your Bank</title>
-    <link rel="icon" type="image/png" href="logo.png" />
-    <link rel="stylesheet" href="CSSindex.css">
-    <link rel="stylesheet" href="darkMode.css"><!-- Archivo CSS alternativo. Modo oscuro. -->
-    <script type="text/javascript" src="darkMode.js" defer></script><!-- Archivo js alternativo. Modo oscuro. -->
+    <link rel="icon" type="image/png" href="../logo.png">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Main Stylesheet -->
+    <link rel="stylesheet" href="assets/css/style.css" title="Normal">
+    <!-- Dark Mode Alternate Stylesheet -->
+    <link rel="alternate stylesheet" href="assets/css/dark-mode.css" title="Dark mode" id="dark-mode-css">
 </head>
 <body>
-    <img id="darkModeToggle" src="moon.png" alt="dark mode">
- 
-
-    <img id="logo" src="logo.png" alt="Logo">
-
-
-    <div class="container">
-        <h1>Welcome to Your Bank</h1>
-        <div class="buttons">
-           
-            <button class="btn register" onclick="window.location.href='signup/signUp.html'">Register</button>
-            <button class="btn login" onclick="window.location.href='signin/signin.html'">Log In</button>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <a class="navbar-brand" href="index.html">
+                <i class="fas fa-university"></i>
+                <span>Digital Bank</span>
+            </a>
             
+            <button class="nav-toggler" id="navToggler">
+                <i class="fas fa-bars"></i>
+            </button>
+            
+            
+        </div>
+    </nav>
+
+    <!-- Hero / Welcome Section -->
+    <div class="container-form home-hero">
+        <div class="form-card home-card">
+            <h1>Welcome to Your Bank</h1>
+            
+            <!-- Dark Mode Toggle -->
+            <button id="darkModeToggle">
+                <i class="fas fa-moon"></i>
+            </button>
+
+
+            <div class="buttons">
+                <button class="submit-btn register" onclick="window.location.href='signUp.html'">
+                    <i class="fas fa-user-plus"></i> Register
+                </button>
+                <button class="submit-btn login" onclick="window.location.href='signIn.html'">
+                    <i class="fas fa-right-to-bracket"></i> Log In
+                </button>
+            </div>
+
         </div>
     </div>
 
- 
-   
-    
+    <script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const darkModeToggle = document.getElementById('darkModeToggle');
+        const darkModeCSS = document.getElementById('dark-mode-css');
+        const darkModeIcon = darkModeToggle.querySelector('i');
+
+        // Cargar preferencia guardada
+        if (localStorage.getItem('darkMode') === 'enabled') {
+            darkModeCSS.disabled = false;
+            darkModeIcon.className = 'fas fa-sun';
+        } else {
+            darkModeCSS.disabled = true;
+            darkModeIcon.className = 'fas fa-moon';
+        }
+
+        // Toggle dark mode al hacer click
+        darkModeToggle.addEventListener('click', () => {
+            if (darkModeCSS.disabled) {
+                darkModeCSS.disabled = false;
+                localStorage.setItem('darkMode', 'enabled');
+                darkModeIcon.className = 'fas fa-sun';
+            } else {
+                darkModeCSS.disabled = true;
+                localStorage.setItem('darkMode', 'disabled');
+                darkModeIcon.className = 'fas fa-moon';
+            }
+        });
+
+        // ===== MOBILE MENU =====
+        const navToggler = document.getElementById('navToggler');
+        const navMenu = document.getElementById('navMenu');
+        if (navToggler && navMenu) {
+            navToggler.addEventListener('click', () => {
+                navMenu.classList.toggle('active');
+            });
+        }
+    });
+    </script>
 </body>
 </html>

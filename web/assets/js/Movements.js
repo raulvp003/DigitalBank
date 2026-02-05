@@ -1,13 +1,17 @@
 const url = "/CRUDBankServerSide/webresources/movement";
-const accountId = sessionStorage.getItem("customer.id");
+const accountId = sessionStorage.getItem("customerId");
 if (!accountId) {
     alert("Error: sesión no válida o cuenta no seleccionada");
-    window.location.href = "../index.html"; 
+    window.location.href = "../../index.html"; 
     throw new Error("No accountId in sessionStorage");
 }
-
+/*const accountId = '1569874954'; //id de ejemplo*/
 async function cargarMovimientos() {
     const lista = document.getElementById('movementsList');
+    const balanceDiv = document.getElementById("currentBalance");
+    const table = lista.closest('table'); // la tabla
+    const noMovementsMsg = document.getElementById("noMovementsMsg");
+
     lista.innerHTML = "";
     let movimientos = [];
 
@@ -20,9 +24,19 @@ async function cargarMovimientos() {
 
         movimientos = await response.json();
 
+        if (movimientos.length === 0) {
+            table.style.display = "none";           // ocultar tabla
+            balanceDiv.style.display = "none";      // ocultar saldo
+            noMovementsMsg.style.display = "block"; // mostrar mensaje
+            return 0; // saldo 0
+        } else {
+            table.style.display = "table";          // mostrar tabla
+            balanceDiv.style.display = "block";     // mostrar saldo
+            noMovementsMsg.style.display = "none";  // ocultar mensaje
+        }
+
         movimientos.forEach(m => {
             const tr = document.createElement("tr");
-            
             let formattedTimestamp = m.timestamp ? new Date(m.timestamp).toLocaleString() : '';
             
             tr.innerHTML = `
@@ -33,14 +47,10 @@ async function cargarMovimientos() {
               <td>${m.description}</td>
             `;
             
-            if (m.amount >= 0) {
-                tr.classList.add("income");
-            } else {
-                tr.classList.add("expense");
-    }
-        document.getElementById("movementsList").appendChild(tr);
+            if (m.amount >= 0) tr.classList.add("income");
+            else tr.classList.add("expense");
 
-
+            lista.appendChild(tr);
         });
 
     } catch (error) {
@@ -62,12 +72,10 @@ async function cargarMovimientos() {
         );
     }
 
-    // Mostrar saldo actual
-    const balanceDiv = document.getElementById("currentBalance");
     balanceDiv.textContent = `Current Balance: ${lastBalance.toFixed(2)}`;
-
     return lastBalance;
 }
+
 
 
 

@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up | Digital Bank</title>
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+
+    
+    <!-- Dark mode stylesheet (SEPARADO) -->
+     <link rel="stylesheet" href="assets/css/style.css" title="Normal">
+<link rel="alternate stylesheet" href="assets/css/dark-mode.css" title="Dark mode" id="dark-mode-css" >
+
+</head>
+<body>
+   
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <a class="navbar-brand" href="index.html">
+                <i class="fas fa-university"></i>
+                <span>Digital Bank</span>
+            </a>
+            
+            <button class="nav-toggler" id="navToggler">
+                <i class="fas fa-bars"></i>
+            </button>
+            
+            <div class="nav-menu" id="navMenu">
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="../about.html">About Us</a></li>
+                    <li><a href="../services.html">Services</a></li>
+
+                </ul>
+                
+            </div>
+        </div>
+    </nav>
+
+    <!-- Form -->
+    <div class="container-form">
+        <div class="form-card">
+            <div class="form-header">
+                <div class="form-logo">
+                    <i class="fas fa-user-plus"></i>
+                       <button id="darkModeToggle">
+        <i class="fas fa-moon"></i>
+    </button>
+
+                </div>
+                <h1>Create Account</h1>
+                <p>Fill in the form to register</p>
+            </div>
+            
+            <form id="signUpForm" novalidate>
+                <!-- First Name & Middle Initial -->
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="FirstName">First Name *</label>
+                        <input type="text" id="FirstName" placeholder="e.g., John">
+                        <div class="error-message" id="FirstNameError">
+                            <i class="fas fa-exclamation-circle"></i>
+                            <span>First name must contain only letters and spaces (2–50 characters)</span>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="MiddleInitial">Middle Initial *</label>
+                        <input type="text" id="MiddleInitial" placeholder="M" maxlength="1">
+                        <div class="error-message" id="MiddleInitialError">
+                            <i class="fas fa-exclamation-circle"></i>
+                            <span>Middle initial can only be one letter</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Last Name -->
+                <div class="form-group">
+                    <label for="LastName">Last Name *</label>
+                    <input type="text" id="LastName" placeholder="e.g., Smith">
+                    <div class="error-message" id="LastNameError">
+                        <i class="fas fa-exclamation-circle"></i>
+                        <span>Last name must contain only letters and spaces (2–50 characters)</span>
+                    </div>
+                </div>
+                
+                <!-- Street -->
+                <div class="form-group">
+                    <label for="Street">Street Address *</label>
+                    <input type="text" id="Street" placeholder="e.g., 123 Main St">
+                    <div class="error-message" id="StreetError">
+                        <i class="fas fa-exclamation-circle"></i>
+                        <span>Street can contain letters, numbers, and spaces (2–90 characters)</span>
+                    </div>
+                </div>
+                
+                <!-- City & State -->
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="City">City *</label>
+                        <input type="text" id="City" placeholder="e.g., New York">
+                        <div class="error-message" id="CityError">
+                            <i class="fas fa-exclamation-circle"></i>
+                            <span>City must contain only letters and spaces (2–50 characters)</span>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="State">State *</label>
+                        <input type="text" id="State" placeholder="e.g., NY">
+                        <div class="error-message" id="StateError">
+                            <i class="fas fa-exclamation-circle"></i>
+                            <span>State must contain only letters and spaces (2–50 characters)</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- ZIP & Phone -->
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="Zip">ZIP Code *</label>
+                        <input type="text" id="Zip" placeholder="e.g., 10001">
+                        <div class="error-message" id="ZipError">
+                            <i class="fas fa-exclamation-circle"></i>
+                            <span>ZIP Code must contain between 4 and 10 digits</span>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="Phone">Phone *</label>
+                        <input type="text" id="Phone" placeholder="e.g., 1234567890">
+                        <div class="error-message" id="PhoneError">
+                            <i class="fas fa-exclamation-circle"></i>
+                            <span>Phone number must contain between 9 and 15 digits</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Email -->
+                <div class="form-group">
+                    <label for="Email">Email *</label>
+                    <input type="email" id="Email" placeholder="e.g., john@example.com">
+                    <div class="error-message" id="EmailError">
+                        <i class="fas fa-exclamation-circle"></i>
+                        <span>Please enter a valid email (example@domain.com)</span>
+                    </div>
+                </div>
+                
+                <!-- Passwords -->
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="Password">Password *</label>
+                        <div class="password-container">
+                            <input type="password" id="Password" placeholder="Minimum 8 characters">
+                            <button type="button" class="password-toggle" data-target="Password">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                        </div>
+                        <div class="error-message" id="PasswordError">
+                            <i class="fas fa-exclamation-circle"></i>
+                            <span>Password must have at least 8 characters, one uppercase letter, one number, and one symbol</span>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="ConfirmPassword">Confirm Password *</label>
+                        <div class="password-container">
+                            <input type="password" id="ConfirmPassword" placeholder="Repeat password">
+                            <button type="button" class="password-toggle" data-target="ConfirmPassword">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                        </div>
+                        <div class="error-message" id="ConfirmPasswordError">
+                            <i class="fas fa-exclamation-circle"></i>
+                            <span>Passwords do not match</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Message -->
+                <div id="responseMsgSignUp" class="alert-message"></div>
+                
+                <!-- Submit -->
+                <button type="submit" class="submit-btn">
+                    <i class="fas fa-user-plus"></i> Create Account
+                </button>
+                
+                <!-- Login link -->
+                <div class="login-link">
+                    Already have an account? <a href="signIn.html">Sign in</a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="assets/js/scriptSignUp.js"></script>
+</body>
+</html>
