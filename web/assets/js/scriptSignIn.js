@@ -214,4 +214,3 @@ async function fetchAccountId(customerId) {
         console.log("UserId en sessionStorage:", sessionStorage.getItem("customer.id"));
 
     }
-
