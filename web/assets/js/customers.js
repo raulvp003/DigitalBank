@@ -22,6 +22,11 @@ document.addEventListener('DOMContentLoaded', () => {
     const confirmMessageEl = document.getElementById('confirmMessage');
     const confirmYesBtn = document.getElementById('confirmYesBtn');
     const confirmNoBtn = document.getElementById('confirmNoBtn');
+    // Elementos para el vídeo de ayuda (Help)
+    const helpBtn = document.getElementById('helpBtn');
+    const helpVideoModal = document.getElementById('helpVideoModal');
+    const helpVideo = document.getElementById('helpVideo');
+    const helpCloseBtn = document.getElementById('helpCloseBtn');
 
     // Caché local sencillo: guardo la última lista recibida para rellenar
     // el formulario al editar sin volver a llamar al servidor.
@@ -111,8 +116,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Si un campo no existe en la página, lo omito silenciosamente.
     try {
         addBlurValidation('firstName', /^[A-Za-zÁÉÍÓÚáéíóúñÑ\s]{2,50}$/, 'First name must contain only letters and spaces (2–50 characters)');
-        // middleInitial should be exactly one letter
-        addBlurValidation('middleInitial', /^[A-Za-zÁÉÍÓÚáéíóúñÑ]$/, 'Middle initial must be one letter');
+        addBlurValidation('middleInitial', /^[A-Za-zÁÉÍÓÚáéíóúñÑ]?$/, 'Middle initial can only be one letter');
         addBlurValidation('lastName', /^[A-Za-zÁÉÍÓÚáéíóúñÑ\s]{2,50}$/, 'Last name must contain only letters and spaces (2–50 characters)');
         addBlurValidation('street', /^[A-Za-zÁÉÍÓÚáéíóúñÑ0-9\s.,-]{2,90}$/, 'Street can contain letters, numbers, and spaces (2–90 characters)');
         addBlurValidation('city', /^[A-Za-zÁÉÍÓÚáéíóúñÑ\s]{2,50}$/, 'City must contain only letters and spaces (2–50 characters)');
@@ -128,7 +132,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Valido el nombre: obligatorio, solo letras, longitud razonable
     function validateFirstName(idInput = "firstName", idMsg = "responseMsgName") {
         const input = document.getElementById(idInput);
-        const msgBox = document.getElementById(idInput + 'Error');
+        const msgBox = document.getElementById(idMsg);
         const onlyLettersRegExp = /^[a-zA-ZÁáÉéÍíÓóÚúÑñ\s]+$/;
     if (msgBox) msgBox.style.display = "none";
         if (!input) return false;
@@ -142,7 +146,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Valido la inicial del segundo nombre: debe ser una sola letra
     function validateMiddleInitial(idInput = "middleInitial", idMsg = "responseMsgInitial") {
         const input = document.getElementById(idInput);
-        const msgBox = document.getElementById(idInput + 'Error');
+        const msgBox = document.getElementById(idMsg);
         const singleLetterRegExp = /^[a-zA-ZÁáÉéÍíÓóÚúÑñ]$/;
     if (msgBox) msgBox.style.display = "none";
         if (!input) return true; // si el campo no existe, lo considero válido
@@ -155,7 +159,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Valido el apellido
     function validateLastName(idInput = "lastName", idMsg = "responseMsgLastName") {
         const input = document.getElementById(idInput);
-        const msgBox = document.getElementById(idInput + 'Error');
+        const msgBox = document.getElementById(idMsg);
         const onlyLettersRegExp = /^[a-zA-ZÁáÉéÍíÓóÚúÑñ\s]+$/;
     if (msgBox) msgBox.style.display = "none";
         if (!input) return false;
@@ -169,7 +173,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Valido la calle
     function validateStreet(idInput = "street", idMsg = "responseMsgStreet") {
         const input = document.getElementById(idInput);
-        const msgBox = document.getElementById(idInput + 'Error');
+        const msgBox = document.getElementById(idMsg);
         const streetRegExp = /^[a-zA-ZÁáÉéÍíÓóÚúÑñ0-9\s.,\/ -]+$/;
     if (msgBox) msgBox.style.display = "none";
         if (!input) return false;
@@ -183,7 +187,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Valido la ciudad
     function validateCity(idInput = "city", idMsg = "responseMsgCity") {
         const input = document.getElementById(idInput);
-        const msgBox = document.getElementById(idInput + 'Error');
+        const msgBox = document.getElementById(idMsg);
         const onlyLettersRegExp = /^[a-zA-ZÁáÉéÍíÓóÚúÑñ\s]+$/;
     if (msgBox) msgBox.style.display = "none";
         if (!input) return false;
@@ -197,7 +201,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Valido el estado/provincia
     function validateState(idInput = "state", idMsg = "responseMsgState") {
         const input = document.getElementById(idInput);
-        const msgBox = document.getElementById(idInput + 'Error');
+        const msgBox = document.getElementById(idMsg);
         const onlyLettersRegExp = /^[a-zA-ZÁáÉéÍíÓóÚúÑñ\s]+$/;
     if (msgBox) msgBox.style.display = "none";
         if (!input) return false;
@@ -211,7 +215,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Valido el código postal (solo números)
     function validateZip(idInput = "zip", idMsg = "responseMsgZip") {
         const input = document.getElementById(idInput);
-        const msgBox = document.getElementById(idInput + 'Error');
+        const msgBox = document.getElementById(idMsg);
         const numbersOnlyRegExp = /^[0-9]+$/;
     if (msgBox) msgBox.style.display = "none";
         if (!input) return false;
@@ -224,7 +228,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Valido el teléfono (mínimo 9 dígitos)
     function validatePhone(idInput = "phone", idMsg = "responseMsgPhone") {
         const input = document.getElementById(idInput);
-        const msgBox = document.getElementById(idInput + 'Error');
+        const msgBox = document.getElementById(idMsg);
         const phoneRegExp = /^[+]{0,1}[0-9]+$/;
     if (msgBox) msgBox.style.display = "none";
         if (!input) return false;
@@ -238,7 +242,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Valido el correo electrónico
     function validateEmail(idInput = "email", idMsg = "responseMsgEmail") {
         const input = document.getElementById(idInput);
-        const msgBox = document.getElementById(idInput + 'Error');
+        const msgBox = document.getElementById(idMsg);
         const emailRegExp = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
     if (msgBox) msgBox.style.display = "none";
         if (!input) return false;
@@ -428,6 +432,21 @@ document.addEventListener('DOMContentLoaded', () => {
                 customer.password = generarPassword(customer.firstName, String(customer.phone || ''));
             }
 
+            // Compruebo duplicado de email en el cliente antes de enviar.
+            // Si ya existe otro usuario con el mismo email , evito la petición
+            // y muestro el error para que el cliente vea que no s.
+            const emailEl = document.getElementById('email');
+            const emailErrBox = document.getElementById('emailError');
+            if (customer.email) {
+                const eLower = String(customer.email).toLowerCase();
+                const duplicate = lastCustomers.some(u => u.email && String(u.email).toLowerCase() === eLower && (customer.id === undefined || String(u.id) !== String(customer.id)));
+                if (duplicate) {
+                    showError(emailErrBox, 'This email is already in use');
+                    if (emailEl) emailEl.focus();
+                    return;
+                }
+            }
+
             // No envío la propiedad id cuando es creación
             if (customer.id === null || customer.id === undefined) delete customer.id;
 
@@ -535,6 +554,31 @@ document.addEventListener('DOMContentLoaded', () => {
             if (e.target === formContainer) hideForm();
         });
     }
+
+    // --- Help (video) handlers: abro/cierro el modal de ayuda y reproduzco/pauso el vídeo ---
+    function openHelp() {
+        if (!helpVideoModal) return;
+        helpVideoModal.classList.remove('hidden');
+        helpVideoModal.setAttribute('aria-hidden', 'false');
+        // intento reproducir el vídeo automáticamente
+        try { if (helpVideo && typeof helpVideo.play === 'function') helpVideo.play().catch(() => {}); } catch (e) { }
+        // foco en el botón cerrar
+        if (helpCloseBtn) helpCloseBtn.focus();
+    }
+
+    function closeHelp() {
+        if (!helpVideoModal) return;
+        helpVideoModal.classList.add('hidden');
+        helpVideoModal.setAttribute('aria-hidden', 'true');
+        // detengo y rebobino el vídeo para que esté listo la próxima vez
+        try { if (helpVideo) { helpVideo.pause(); helpVideo.currentTime = 0; } } catch (e) { }
+        if (createBtn) createBtn.focus();
+    }
+
+    if (helpBtn) helpBtn.addEventListener('click', (e) => { e.preventDefault(); openHelp(); });
+    if (helpCloseBtn) helpCloseBtn.addEventListener('click', (e) => { e.preventDefault(); closeHelp(); });
+    if (helpVideoModal) helpVideoModal.addEventListener('click', (e) => { if (e.target === helpVideoModal) closeHelp(); });
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && helpVideoModal && !helpVideoModal.classList.contains('hidden')) closeHelp(); });
 
     // Inicio: cargo la lista de customers al cargar la página
     

@@ -46,8 +46,8 @@
 
       <div class="actions-row">
         <button class="submit-btn" id="createCustomerBtn">Create Customer</button>
-
-        
+        <!-- Botón de ayuda: abre un vídeo de ayuda dentro de la página -->
+        <button class="submit-btn" id="helpBtn" style="margin-left:8px;">Help</button>
       </div>
 
       <div class="table-responsive mt-30">
@@ -88,31 +88,31 @@
                 <div id="lastNameError" class="error-message"><i class="fas fa-exclamation-circle"></i><span></span></div>
               </div>
               <div class="form-group">
-                <input type="text" id="middleInitial" placeholder="Middle Initial">
+                <input type="text" id="middleInitial" placeholder="Middle Initial" required>
                 <div id="middleInitialError" class="error-message"><i class="fas fa-exclamation-circle"></i><span></span></div>
               </div>
               <div class="form-group">
-                <input type="text" id="street" placeholder="Street">
+                <input type="text" id="street" placeholder="Street" required>
                 <div id="streetError" class="error-message"><i class="fas fa-exclamation-circle"></i><span></span></div>
               </div>
               <div class="form-group">
-                <input type="text" id="city" placeholder="City">
+                <input type="text" id="city" placeholder="City" required>
                 <div id="cityError" class="error-message"><i class="fas fa-exclamation-circle"></i><span></span></div>
               </div>
               <div class="form-group">
-                <input type="text" id="state" placeholder="State">
+                <input type="text" id="state" placeholder="State" required>
                 <div id="stateError" class="error-message"><i class="fas fa-exclamation-circle"></i><span></span></div>
               </div>
               <div class="form-group">
-                <input type="text" id="zip" placeholder="Zip">
+                <input type="text" id="zip" placeholder="Zip" required>
                 <div id="zipError" class="error-message"><i class="fas fa-exclamation-circle"></i><span></span></div>
               </div>
               <div class="form-group">
-                <input type="text" id="phone" placeholder="Phone">
+                <input type="text" id="phone" placeholder="Phone" required>
                 <div id="phoneError" class="error-message"><i class="fas fa-exclamation-circle"></i><span></span></div>
               </div>
               <div class="form-group">
-                <input type="email" id="email" placeholder="Email">
+                <input type="email" id="email" placeholder="Email" required>
                 <div id="emailError" class="error-message"><i class="fas fa-exclamation-circle"></i><span></span></div>
               </div>
             <div style="margin-top:10px; display:flex; gap:10px;">
@@ -134,13 +134,29 @@
           </div>
         </div>
       </div>
+      
+      <!-- Help video modal (simple player, se carga localmente desde assets) -->
+      <div id="helpVideoModal" class="modal mt-30 hidden" aria-hidden="true">
+        <div class="modal-content form-card" role="dialog" aria-modal="true" style="max-width:900px; width:95%;">
+          <div style="display:flex; justify-content:space-between; align-items:center;">
+            <h3>Help — Interactive Video</h3>
+            <button type="button" class="submit-btn" id="helpCloseBtn">Close</button>
+          </div>
+          <div style="margin-top:12px;">
+            <video id="helpVideo" controls style="width:100%; height:auto; background:#000;">
+              <source src="assets/h5p-content/content/videos/files-69845d92bdd1d.mp4" type="video/mp4">
+              Your browser does not support the video tag.
+            </video>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 
  
  
   <script src="clases.js"></script>
-  <!-- Page-specific JS (moved from inline) -->
+ 
   <script src="assets/js/customers.js"></script>
 </body>
 </html>
