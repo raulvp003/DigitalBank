@@ -1,77 +1,36 @@
-const inputEmail = document.getElementById("Email");
-const inputPassword = document.getElementById("Password");
-const responseMsg = document.getElementById("responseMsgSignUp");
+document.addEventListener('DOMContentLoaded', function () {
+    const formulario = document.getElementById("formulario");
+    const inputEmail = document.getElementById("Email");
+    const inputPassword = document.getElementById("Password");
+    const responseMsg = document.getElementById("responseMsgSignUp");
 
-const formulario = document.getElementById("formulario");
-
-document.addEventListener('DOMContentLoaded', function() {
-    // ===== MOBILE MENU =====
-    const navToggler = document.getElementById('navToggler');
-    const navMenu = document.getElementById('navMenu');
-
-    if (navToggler && navMenu) {
-        navToggler.addEventListener('click', () => {
-            navMenu.classList.toggle('active');
-        });
-    }
-
-    // ===== DARK MODE (ALTERNATE STYLESHEET) =====
-    const darkModeToggle = document.getElementById('darkModeToggle');
-    const darkModeIcon = darkModeToggle.querySelector('i');
-    const darkModeCSS = document.getElementById('dark-mode-css');
-
-    // Cargar preferencia guardada
-    if (localStorage.getItem('darkMode') === 'enabled') {
-        darkModeCSS.disabled = false;
-        darkModeIcon.className = 'fas fa-sun';
-    } else {
-        darkModeCSS.disabled = true;
-        darkModeIcon.className = 'fas fa-moon';
-    }
-
-    // Toggle con el botón
-    darkModeToggle.addEventListener('click', () => {
-        if (darkModeCSS.disabled) {
-            darkModeCSS.disabled = false;
-            localStorage.setItem('darkMode', 'enabled');
-            darkModeIcon.className = 'fas fa-sun';
-        } else {
-            darkModeCSS.disabled = true;
-            localStorage.setItem('darkMode', 'disabled');
-            darkModeIcon.className = 'fas fa-moon';
-        }
-    });
-
-    // ===== SHOW/HIDE PASSWORD =====
-    document.querySelectorAll('.password-toggle').forEach(btn => {
-        btn.addEventListener('click', () => {
-            const input = document.getElementById(btn.dataset.target);
-            const icon = btn.querySelector('i');
-            if (input.type === 'password') {
-                input.type = 'text';
-                icon.className = 'fas fa-eye-slash';
-            } else {
-                input.type = 'password';
-                icon.className = 'fas fa-eye';
-            }
-        });
-    });
-
-    // ===== LOGIN FORM VALIDATION =====
     function mostrarError(mensaje) {
         responseMsg.textContent = mensaje;
         responseMsg.className = "alert-message alert-error";
         responseMsg.style.display = "block";
     }
 
-    formulario.addEventListener("submit", (event) => {
+    function Customer(id, firstName, lastName, middleInitial, street, city, state, zip, phone, email, password) {
+        this.id = id;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.middleInitial = middleInitial;
+        this.street = street;
+        this.city = city;
+        this.state = state;
+        this.zip = zip;
+        this.phone = phone;
+        this.email = email;
+        this.password = password;
+    }
+
+    formulario.addEventListener("submit", async (event) => {
         event.preventDefault();
         responseMsg.style.display = "none";
         responseMsg.className = "";
 
         const email = inputEmail.value.trim();
         const password = inputPassword.value.trim();
-
         const emailRegExp = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 
         if (email === "" || email.length > 255 || !emailRegExp.test(email)) {
@@ -89,31 +48,47 @@ document.addEventListener('DOMContentLoaded', function() {
             return;
         }
 
-        sendRequestAndProcessResponse();
+        try {
+            // Fetch login y obtener customerId
+            const loginRes = await fetch(formulario.action + `${encodeURIComponent(email)}/${encodeURIComponent(password)}`, {
+                method: 'GET',
+                headers: {'Content-Type': 'application/xml'}
+            });
+
+            if (loginRes.status === 401) throw new Error("Credenciales incorrectas");
+            if (loginRes.status === 500) throw new Error("Error en el servidor");
+            if (!loginRes.ok) throw new Error("Error inesperado");
+
+            const xmlData = await loginRes.text();
+            const parser = new DOMParser();
+            const xmlDoc = parser.parseFromString(xmlData, "application/xml");
+            const customerNode = xmlDoc.getElementsByTagName("customer")[0];
+            const customerId = customerNode.querySelector(":scope > id").textContent.trim();
+
+            sessionStorage.setItem("customer.id", customerId);
+            console.log("CustomerId guardado:", customerId);
+
+            // Guardar accountId
+            await fetchAccountId(customerId);
+
+            // Redirigir al main después de todo
+            window.location.href = "main.html";
+
+        } catch (error) {
+            mostrarError(error.message);
+        }
     });
 
-    // ===== CUSTOMER CONSTRUCTOR =====
-    function Customer(id, firstName, lastName, middleInitial, street, city, state, zip, phone, email, password){
-        this.id = id;
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.middleInitial = middleInitial;
-        this.street = street;
-        this.city = city;
-        this.state = state;
-        this.zip = zip;
-        this.phone = phone;
-        this.email = email;
-        this.password = password;
-    }
+}); 
 
-    // ===== FETCH LOGIN =====
-    function sendRequestAndProcessResponse() {
-        const email = inputEmail.value.trim();
-        const password = inputPassword.value.trim();
 
-        fetch(formulario.action + `${encodeURIComponent(email)}/${encodeURIComponent(password)}`, {
+async function fetchAccountId(customerId) {
+    // ===== FETCH CUENTAS =====
+    let accounts = [];
+    try {
+        const accountRes = await fetch(`/CRUDBankServerSide/webresources/account`, {
             method: 'GET',
+<<<<<<< HEAD
             headers: {'Content-Type': 'application/xml'}
         }).then(res => {
             if (res.status === 401)
@@ -138,33 +113,72 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         }).catch(error => {
             mostrarError(error.message);
+
+        
+
         });
-    }
 
-    // ===== PARSE XML Y GUARDAR EN SESSION =====
-    function storeResponseXMLData(xmlString) {
+        if (!accountRes.ok) throw new Error(`Error obteniendo cuentas: ${accountRes.status}`);
+
+        const accountXml = await accountRes.text();
+        console.log("XML de cuentas recibido:\n", accountXml);
+
         const parser = new DOMParser();
-        const xmlDoc = parser.parseFromString(xmlString, "application/xml");
+        const xmlDoc = parser.parseFromString(accountXml, "application/xml");
 
-        const customerNode = xmlDoc.getElementsByTagName("customer")[0];
-        const customer = new Customer(
-            customerNode.querySelector(":scope > id").textContent.trim(),
-            customerNode.querySelector(":scope > firstName").textContent,
-            customerNode.querySelector(":scope > lastName").textContent,
-            customerNode.querySelector(":scope > middleInitial").textContent,
-            customerNode.querySelector(":scope > street").textContent,
-            customerNode.querySelector(":scope > city").textContent,
-            customerNode.querySelector(":scope > state").textContent,
-            customerNode.querySelector(":scope > zip").textContent,
-            customerNode.querySelector(":scope > phone").textContent,
-            customerNode.querySelector(":scope > email").textContent,
-            customerNode.querySelector(":scope > password").textContent
-        );
+        const allAccounts = Array.from(xmlDoc.getElementsByTagName("account"));
 
-        // Guardar todo en sessionStorage
-        for (const key in customer) {
-            sessionStorage.setItem(`customer.${key}`, customer[key]);
+        // Filtrar solo las cuentas que pertenecen al customerId
+        const userAccounts = allAccounts.filter(acc => {
+            const customers = acc.getElementsByTagName("customers");
+            for (const cust of customers) {
+                const idNode = cust.getElementsByTagName("id")[0];
+                if (idNode && idNode.textContent.trim() === customerId) {
+                    return true;
+                }
+            }
+            return false;
+        });
+
+        if (userAccounts.length === 0) {
+            console.warn("No se encontraron cuentas para este usuario");
         }
-        console.log("UserId en sessionStorage:", sessionStorage.getItem("customer.id"));
+
+        // Guardar IDs de las cuentas en sessionStorage
+        const accountIds = userAccounts.map(acc => acc.getElementsByTagName("id")[0].textContent.trim());
+        sessionStorage.setItem("customer.accountIds", JSON.stringify(accountIds));
+        if (accountIds.length > 0) sessionStorage.setItem("customer.accountId", accountIds[0]);
+
+        accounts = userAccounts;
+
+    } catch (error) {
+        console.error("Error al obtener cuentas:", error.message);
+        throw error;
     }
-});
+
+    // ===== FETCH CUSTOMER =====
+    let customerXml = null;
+    try {
+        const customerRes = await fetch(`/CRUDBankServerSide/webresources/customer/${customerId}`, {
+            method: 'GET',
+            headers: { 'Accept': 'application/xml' }
+        });
+
+        if (!customerRes.ok) throw new Error(`Error obteniendo customer: ${customerRes.status}`);
+
+        customerXml = await customerRes.text();
+        console.log("XML de customer recibido:\n", customerXml);
+
+    } catch (error) {
+        console.error("Error al obtener customer:", error.message);
+        throw error;
+    }
+
+    // ===== DEVOLVER AMBOS =====
+    return {
+        accountsXml: accounts,  // Array de nodos <account> filtrados
+        customerXml             // Texto XML del customer
+    };
+}
+
+

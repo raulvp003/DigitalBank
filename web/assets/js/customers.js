@@ -584,4 +584,3 @@ document.addEventListener('DOMContentLoaded', () => {
     
     fetchCustomers();
 });
-
