@@ -1,11 +1,11 @@
 const url = "/CRUDBankServerSide/webresources/movement";
-const accountId = sessionStorage.getItem("customerId");
+/*const accountId = sessionStorage.getItem("customerId");
 if (!accountId) {
     alert("Error: sesión no válida o cuenta no seleccionada");
     window.location.href = "../../index.html"; 
     throw new Error("No accountId in sessionStorage");
-}
-/*const accountId = '1569874954'; //id de ejemplo*/
+}*/
+const accountId = '1569874954'; //id de ejemplo*/
 async function cargarMovimientos() {
     const lista = document.getElementById('movementsList');
     const balanceDiv = document.getElementById("currentBalance");
