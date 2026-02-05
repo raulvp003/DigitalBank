@@ -649,8 +649,24 @@ async function updateAccount(event){
  GUARDAR CUENTAS E IR A MOVEMENTS
  ================================
 */
+/*
 function goToMovements(account){
     sessionStorage.setItem("account", JSON.stringify(account));
+    window.location.href = "movements.html";
+}*/
+function goToMovements(account) {
+    // Obtener todos los IDs de las cuentas en la tabla
+    const tbody = document.querySelector("#accountsTable tbody");
+    const rows = tbody.querySelectorAll("tr");
+
+    const accountIds = Array.from(rows).map(row => {
+        // El primer td visible es el ID, si no estás en deleteMode
+        // Si estás en deleteMode, ajusta index según corresponda
+        let idCellIndex = deleteMode ? 1 : 0;
+        return row.cells[idCellIndex].textContent.trim();
+    });
+
+    sessionStorage.setItem("accountIds", JSON.stringify(accountIds));
     window.location.href = "movements.html";
 }
 
