@@ -362,11 +362,13 @@ document.addEventListener('DOMContentLoaded', () => {
             }
             const actions = document.createElement('td');
             const editBtn = document.createElement('button');
-            editBtn.type = 'button'; editBtn.className = 'submit-btn'; editBtn.textContent = 'Editar';
+            editBtn.type = 'button'; editBtn.className = 'submit-btn'; editBtn.textContent = 'Edit';
+            editBtn.setAttribute('aria-label', `Edit customer ${c.firstName} ${c.lastName}`);
             // al pulsar editar llamo a la función global que abre el formulario
             editBtn.addEventListener('click', () => { customersEdit(c.id); });
             const delBtn = document.createElement('button');
             delBtn.type = 'button'; delBtn.className = 'submit-btn'; delBtn.textContent = 'Delete';
+            delBtn.setAttribute('aria-label', `Delete customer ${c.firstName} ${c.lastName}`);
             delBtn.addEventListener('click', () => { customersDelete(c.id); });
             actions.appendChild(editBtn);
             actions.appendChild(document.createTextNode(' '));
