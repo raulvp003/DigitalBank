@@ -1,117 +1,104 @@
 <!DOCTYPE html> 
-<html>
-    <head>
-        <title>Your Movements | Digital Bank</title> <!-- Tab title -->
-        <meta charset="UTF-8"> <!-- Allows accents and ñ -->
-        <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- Mobile screen adjustment -->
-        <link rel="icon" type="image/png" href="../logo.png"> <!-- Browser icon -->
-        <link rel="stylesheet" href="assets/css/style.css"> <!-- CSS file -->
-        <script type="text/javascript" src="assets/js/Movements.js" defer></script> <!-- External JS file (executes at the end) -->
+<html lang="en">
+<head>
+    <title>Your Movements | Digital Bank</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" href="../logo.png">
+    <link rel="stylesheet" href="assets/css/style.css">
+    <script type="text/javascript" src="assets/js/Movements.js" defer></script>
 
-        <!-- Font Awesome -->
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-        <link rel="alternate stylesheet" href="assets/css/dark-mode.css" title="Dark mode" id="dark-mode-css">
-    </head>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="alternate stylesheet" href="assets/css/dark-mode.css" title="Dark mode" id="dark-mode-css">
+</head>
 
-    <body>
-        <!-- Navbar (same as other pages) -->
-        <nav class="navbar">
-            <div class="nav-container">
-                <a class="navbar-brand" href="index.html">
-                    <i class="fas fa-university"></i>
-                    <span>Digital Bank</span>
-                </a>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar" role="navigation" aria-label="Main Navigation">
+        <div class="nav-container">
+            <a class="navbar-brand" href="index.html" tabindex="0">
+                <i class="fas fa-university" aria-hidden="true"></i>
+                <span>Digital Bank</span>
+            </a>
+            <button class="nav-toggler" id="navToggler" aria-label="Toggle navigation menu" aria-controls="navMenu" aria-expanded="false" tabindex="0">
+                <i class="fas fa-bars" aria-hidden="true"></i>
+            </button>
+            <div class="nav-menu" id="navMenu">
+                <ul>
+                    <li><a href="Accounts.html" tabindex="0">Accounts</a></li>
+                    <li><a href="index.html" tabindex="0">Login</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <!-- Movements container -->
+    <main class="container-form table-page">
+        <div class="form-card" id="mvFormCard">
 
-                <button class="nav-toggler" id="navToggler">
-                    <i class="fas fa-bars"></i>
+            <div class="form-header">
+                <h1 id="movementsTitle">Movements</h1>
+                <p id="movementsDesc">See, create or undo movements</p>
+            </div>
+            
+            <!-- Account selector -->
+            <div class="form-group" id="AccSelector">
+                <label for="accountSelector">Select Account:</label>
+                <select id="accountSelector" aria-label="Select account" tabindex="0"></select>
+            </div>
+
+            <!-- Dynamic accounts container -->
+            <div id="accountsContainer" role="region" aria-labelledby="movementsTitle" aria-describedby="movementsDesc"></div>
+
+            <!-- Global buttons -->
+            <div style="display:flex; gap:15px; margin-top:25px;">
+                <button id="btnCreateMovement" class="submit-btn" aria-label="Create new movement" tabindex="0">
+                    <i class="fa fa-plus" aria-hidden="true"></i> New Movement
                 </button>
 
-                <div class="nav-menu" id="navMenu">
-                    <ul>
-                        <li><a href="MovementsPage.html">Movements</a></li>
-                        <li><a href="Accounts.html">Accounts</a></li>
-                        <li><a href="index.html">Login</a></li>
-                    </ul>
-                </div>
+                <button id="btnUndoMovement" class="submit-btn" aria-label="Undo last movement" tabindex="0">
+                    <i class="fa fa-undo" aria-hidden="true"></i> Undo Last
+                </button>
             </div>
-        </nav>
 
+        </div>
+    </main>
 
+    <!-- Modal for creating movement -->
+    <div id="movementModal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.5); 
+         justify-content:center; align-items:center; z-index:1000;" role="dialog"  aria-labelledby="modalTitle" aria-describedby="modalDesc" tabindex="-1">
 
-        <div class="container-form table-page">
-            <div class="form-card">
+        <form id="movementForm" class="form-card" style="max-width:400px;">
 
-                <div class="form-header">
-                    <h1>Movements</h1>
-                    <p>See,create or undo movements</p>
-                </div>
-
-                <h2 id="currentBalance">Current Balance: 0.00</h2>
-
-                <div class="table-responsive">
-                    <table class="Table">
-                        <thead>
-                            <tr>
-                                <th>ID</th>
-                                <th>Amount</th>
-                                <th>Balance</th>
-                                <th>Timestamp</th>
-                                <th>Operation</th>
-                            </tr>
-                        </thead>
-                        <tbody id="movementsList"></tbody>
-                    </table>
-                    <p id="noMovementsMsg" >
-                        No movements yet!
-                    </p>
-                </div>
-
-                <div style="display:flex; gap:15px; margin-top:25px;">
-                    <button id="btnCreateMovement" class="submit-btn">
-                        <i class="fa fa-plus"></i> New Movement
-                    </button>
-
-                    <button id="btnUndoMovement" class="submit-btn">
-                        <i class="fa fa-undo"></i> Undo Last
-                    </button>
-                </div>
-
+            <div class="form-header">
+                <h1 id="modalTitle">Create Movement</h1>
+                <p id="modalDesc">Add a new transaction</p>
             </div>
-        </div>
-        <div id="movementModal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.5); 
-             justify-content:center; align-items:center; z-index:1000;">
 
-            <form id="movementForm" class="form-card" style="max-width:400px;">
+            <div class="form-group">
+                <label for="amount">Amount</label>
+                <input type="number" id="amount" step="0.5" min="1" required tabindex="0">
+            </div>
 
-                <div class="form-header">
-                    <h1>Create Movement</h1>
-                    <p>Add a new transaction</p>
-                </div>
+            <div class="form-group">
+                <label for="Operation">Operation</label>
+                <select id="Operation" required tabindex="0">
+                    <option value="Deposit" id="Deposit">Deposit</option>
+                    <option value="Payment" id="Payment">Payment</option>
+                </select>
+            </div>
 
-                <div class="form-group">
-                    <label for="amount">Amount</label>
-                    <input type="number" id="amount" step="0.5" min="1" required>
-                </div>
+            <div style="display:flex; gap:15px;">
+                <button type="submit" class="submit-btn" tabindex="0">
+                    <i class="fa fa-check" aria-hidden="true"></i> Submit
+                </button>
 
-                <div class="form-group">
-                    <label for="Operation">Operation</label>
-                    <select id="Operation" required>
-                        <option value="Deposit" id="Deposit">Deposit</option>
-                        <option value="Payment" id="Payment">Payment</option>
-                    </select>
-                </div>
+                <button type="button" id="btnCancel" class="submit-btn" style="background:#e74c3c;" aria-label="Cancel movement creation" tabindex="0">
+                    <i class="fa fa-times" aria-hidden="true"></i> Cancel
+                </button>
+            </div>
 
-                <div style="display:flex; gap:15px;">
-                    <button type="submit" class="submit-btn">
-                        <i class="fa fa-check"></i> Submit
-                    </button>
-
-                    <button type="button" id="btnCancel" class="submit-btn" style="background:#e74c3c;">
-                        <i class="fa fa-times"></i> Cancel
-                    </button>
-                </div>
-
-            </form>
-        </div>
-    </body>
+        </form>
+    </div>
+</body>
 </html>
