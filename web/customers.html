@@ -94,7 +94,7 @@
                 <div class="actions-row" role="group" aria-label="Customer actions">
                     <button class="submit-btn" id="createCustomerBtn" aria-label="Create new customer">Create Customer</button>
                     <!-- Botón de ayuda: abre un vídeo de ayuda dentro de la página -->
-                    <button class="submit-btn" id="helpBtn" style="margin-left:8px;" aria-label="Open help video">Help</button>
+                    
                 </div>
 
                 <div class="table-responsive mt-30">
@@ -193,17 +193,13 @@
                     </div>
                 </div>
 
-                <!-- Help video modal (simple player, se carga localmente desde assets) -->
-                <div id="helpVideoModal" class="modal mt-30 hidden" aria-hidden="true" role="dialog" aria-labelledby="helpTitle">
-                    <div class="modal-content form-card" role="document" style="max-width:900px; width:95%;">
-                        <div style="display:flex; justify-content:space-between; align-items:center;">
-                            <h3 id="helpTitle">Help — Interactive Video</h3>
-                            <button type="button" class="submit-btn" id="helpCloseBtn" aria-label="Close help video">Close</button>
-                        </div>
-                        <div style="margin-top:12px;">
-                            <video id="helpVideo" controls style="width:100%; height:auto; background:#000;" aria-label="Help video tutorial">
-                                <source src="assets/h5p-content/content/videos/files-69845d92bdd1d.mp4" type="video/mp4">     
-                            </video>
+                <div id="h5p-container" style=" ">
+            <h1>Help Video</h1>
+            <video width="640" height="360" controls style="margin-top: 10px;">
+                <source src="/DigitalBank/assets/Videos/customers.mp4" type="video/mp4">
+                Tu navegador no soporta el elemento de video.
+            </video>
+        </div>
                         </div>
                     </div>
                 </div>
