@@ -1,264 +1,217 @@
 const url = "/CRUDBankServerSide/webresources/movement";
-/*const accountId = sessionStorage.getItem("customerId");
-if (!accountId) {
-    alert("Error: sesión no válida o cuenta no seleccionada");
-    window.location.href = "../../index.html"; 
-    throw new Error("No accountId in sessionStorage");
-}*/
-const accountId = '1569874954'; //id de ejemplo*/
-async function cargarMovimientos() {
-    const lista = document.getElementById('movementsList');
-    const balanceDiv = document.getElementById("currentBalance");
-    const table = lista.closest('table'); // la tabla
-    const noMovementsMsg = document.getElementById("noMovementsMsg");
+// Simulamos cuentas
 
-    lista.innerHTML = "";
-    let movimientos = [];
+let accountIds = JSON.parse(sessionStorage.getItem("accountIds")) || [];
+
+if (accountIds.length === 0) {
+    alert("No hay cuentas para mostrar");
+
+    //accountIds = JSON.parse(sessionStorage.getItem("accountIds")) || ["1569874954", "2654785441"];
+
+}
+
+let activeAccountId = accountIds[0]; // por defecto
+
+document.addEventListener("DOMContentLoaded", () => {
+    setupAccountSelector();
+    cargarMovimientos();
+
+    document.getElementById("btnCreateMovement").addEventListener("click", createMovementsHandler);
+    document.getElementById("movementForm").addEventListener("submit", movementCreator);
+    document.getElementById("btnUndoMovement").addEventListener("click", undoLastMovement);
+});
+
+// --- Selector de cuentas ---
+function setupAccountSelector() {
+    const selector = document.getElementById("accountSelector");
+    selector.innerHTML = "";
+
+    accountIds.forEach(id => {
+        const option = document.createElement("option");
+        option.value = id;
+        option.textContent = id;
+        selector.appendChild(option);
+    });
+
+    selector.value = activeAccountId;
+    selector.addEventListener("change", () => {
+        activeAccountId = selector.value;
+        cargarMovimientos();
+    });
+}
+
+// --- Cargar movimientos ---
+// --- Cargar movimientos ---
+async function cargarMovimientos() {
+    const container = document.getElementById("accountsContainer");
+    container.innerHTML = ""; // limpiar tablas previas
 
     try {
-        const response = await fetch(`${url}/account/${accountId}`, {
-            headers: { "Accept": "application/json" }
-        });
+        for (const accountId of accountIds) {
+            const response = await fetch(`${url}/account/${accountId}`, {
+                headers: {"Accept": "application/json"}
+            });
+            if (!response.ok)
+                throw new Error(`Error cargando movimientos de la cuenta ${accountId}`);
 
-        if (!response.ok) throw new Error(`Error en la petición: ${response.status}`);
+            const movimientos = await response.json();
+            const totalBalance = movimientos.length > 0
+                    ? movimientos[movimientos.length - 1].balance
+                    : 0;
 
-        movimientos = await response.json();
+            // Crear wrapper para scroll horizontal en móviles
+            const tableWrapper = document.createElement("div");
+            tableWrapper.classList.add("table-wrapper"); // clase para CSS responsive
+            tableWrapper.style.marginBottom = "30px";
 
-        if (movimientos.length === 0) {
-            table.style.display = "none";           // ocultar tabla
-            balanceDiv.style.display = "none";      // ocultar saldo
-            noMovementsMsg.style.display = "block"; // mostrar mensaje
-            return 0; // saldo 0
-        } else {
-            table.style.display = "table";          // mostrar tabla
-            balanceDiv.style.display = "block";     // mostrar saldo
-            noMovementsMsg.style.display = "none";  // ocultar mensaje
-        }
+            // Encabezado de la cuenta
+            const accountHeader = document.createElement("h2");
+            accountHeader.innerHTML = `Current Balance: ${totalBalance.toFixed(2)}`;
+            tableWrapper.appendChild(accountHeader);
 
-        movimientos.forEach(m => {
-            const tr = document.createElement("tr");
-            let formattedTimestamp = m.timestamp ? new Date(m.timestamp).toLocaleString() : '';
-            
-            tr.innerHTML = `
-              <td>${m.id}</td>
-              <td>${m.amount.toFixed(2)}</td>
-              <td>${m.balance.toFixed(2)}</td>
-              <td>${formattedTimestamp}</td>
-              <td>${m.description}</td>
+            // Crear la tabla
+            const table = document.createElement("table");
+            table.classList.add("Table");
+            table.style.width = "100%";
+
+            table.innerHTML = `
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Amount</th>
+                        <th>Balance</th>
+                        <th>Timestamp</th>
+                        <th>Operation</th>
+                    </tr>
+                </thead>
             `;
-            
-            if (m.amount >= 0) tr.classList.add("income");
-            else tr.classList.add("expense");
 
-            lista.appendChild(tr);
-        });
+            const tbody = document.createElement("tbody");
+            tbody.id = `movementsList-${accountId}`;
 
+            if (movimientos.length === 0) {
+                const tr = document.createElement("tr");
+                tr.innerHTML = `<td colspan="5">No movements yet!</td>`;
+                tbody.appendChild(tr);
+            } else {
+                movimientos.forEach(m => {
+                    const tr = document.createElement("tr");
+                    const formattedTimestamp = m.timestamp
+                            ? new Date(m.timestamp).toLocaleString()
+                            : '';
+                    tr.innerHTML = `
+                        <td data-label="ID">${m.id}</td>
+                        <td data-label="Amount">${m.amount.toFixed(2)}</td>
+                        <td data-label="Balance">${m.balance.toFixed(2)}</td>
+                        <td data-label="Timestamp">${formattedTimestamp}</td>
+                        <td data-label="Operation">${m.description}</td>
+                    `;
+                    tr.classList.add(m.amount >= 0 ? "income" : "expense");
+                    tbody.appendChild(tr);
+                });
+            }
+
+            table.appendChild(tbody);
+            tableWrapper.appendChild(table);
+
+            // Mostrar solo la tabla de la cuenta activa
+            tableWrapper.style.display = accountId === activeAccountId ? "block" : "none";
+            container.appendChild(tableWrapper);
+        }
     } catch (error) {
-        console.error('Error al obtener movimientos:', error);
-        lista.innerHTML = `
-        <tr>
-            <td colspan="5">Error: ${error.message}</td>
-        </tr>`;
+        container.innerHTML = `<p style="color:red">Error cargando movimientos: ${error.message}</p>`;
     }
-
-    // Último balance
-    let lastBalance = 0;
-    if (movimientos.length > 0) {
-        const lastMovement = movimientos[movimientos.length - 1];
-        lastBalance = parseFloat(
-            lastMovement.balance !== undefined && lastMovement.balance !== null
-                ? lastMovement.balance
-                : 0
-        );
-    }
-
-    balanceDiv.textContent = `Current Balance: ${lastBalance.toFixed(2)}`;
-    return lastBalance;
 }
 
 
+// --- Crear movimientos ---
+function createMovementsHandler() {
+    const movementModal = document.getElementById("movementModal");
+    movementModal.style.display = "flex";
 
-
-
-
-function createMovementsHandler(){
-     const movementModal = document.getElementById("movementModal");
-    
-    
-    movementModal.style.display = "flex"; // mostrar modal
-    const btnCancel =document.getElementById("btnCancel");
-    const movementForm = document.getElementById("movementForm");
-    btnCancel.addEventListener("click", function() {
-    movementModal.style.display = "none"; // ocultar modal
-        
+    const btnCancel = document.getElementById("btnCancel");
+    btnCancel.addEventListener("click", () => {
+        movementModal.style.display = "none";
     });
-    
 }
-
-
 
 async function movementCreator(event) {
     event.preventDefault();
 
     try {
-        const amountInput = document.getElementById("amount").value;
+        const amountInput = parseFloat(document.getElementById("amount").value);
         const operation = document.getElementById("Operation").value;
-        
 
-        const amount = parseFloat(amountInput);
-
-        if (isNaN(amount) || amount <= 0) {
+        if (isNaN(amountInput) || amountInput <= 0)
             throw new Error("Amount must be a valid number");
-        }
 
-        if (!operation) {
-            throw new Error("Operation is required");
-        }
+        // Tomamos la cuenta activa
+        const tbody = document.getElementById(`movementsList-${activeAccountId}`);
+        let previousBalance = 0;
+        if (tbody && tbody.rows.length > 0) {
+            const lastRow = tbody.rows[tbody.rows.length - 1];
 
-       
-       const previousBalance = await cargarMovimientos();
-
-
-        // Calcular nuevo balance
-        let totalBalance;
-
-        if (operation === "Deposit") {
-            totalBalance = previousBalance + amount;
-        } else if (operation === "Payment") {
-            if (amount > previousBalance) {
-                throw new Error("Insufficient balance");
+            // Ignorar la fila "No movements yet!"
+            if (lastRow.cells.length >= 3) {
+                previousBalance = parseFloat(lastRow.cells[2].textContent) || 0;
             }
-            totalBalance = previousBalance - amount;
-        } else {
-            throw new Error("Invalid operation");
         }
 
-        // Crear objeto movimiento
+
+        let totalBalance = operation === "Deposit" ? previousBalance + amountInput : previousBalance - amountInput;
+        if (operation === "Payment" && amountInput > previousBalance)
+            throw new Error("Insufficient balance");
+
         const movementData = {
-            amount: operation === "Payment" ? -amount : amount,
+            amount: operation === "Payment" ? -amountInput : amountInput,
             balance: totalBalance,
             description: operation,
             timestamp: new Date().toISOString()
         };
 
-        // Enviar a la BBDD
-        const response = await fetch(`${url}/${accountId}`, {
+        const response = await fetch(`${url}/${activeAccountId}`, {
             method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "Accept": "application/json"
-            },
+            headers: {"Content-Type": "application/json", "Accept": "application/json"},
             body: JSON.stringify(movementData)
         });
 
-        if (!response.ok) {
-            const errorText = await response.text();
-            throw new Error(errorText || "Error creating movement");
-        }
+        if (!response.ok)
+            throw new Error(await response.text() || "Error creating movement");
 
-        // Cerrar modal, limpiar y recargar desde backend
         document.getElementById("movementForm").reset();
         document.getElementById("movementModal").style.display = "none";
-
-        await cargarMovimientos();
-
+        cargarMovimientos();
         alert("Movement created successfully");
-
-    } catch (error) {
-        alert("Error: " + error.message);
+    } catch (err) {
+        alert("Error: " + err.message);
     }
 }
 
-
-async function recargaCuenta(movimientos) {
-    // Obtener la cuenta completa
-    const accountResponse = await fetch(`http://localhost:8080/CRUDBankServerSide/webresources/account/${accountId}`, {
-        headers: { "Accept": "application/json" }
-    });
-
-    if (!accountResponse.ok) throw new Error("No se pudo obtener la cuenta para actualizar");
-
-    const account = await accountResponse.json();
-
-    // Calcular el nuevo balance
-    const newBalance = movimientos.length > 1
-        ? movimientos[movimientos.length - 2].balance
-        : 0;
-
-    account.balance = newBalance;
-
-    // Enviar PUT con la cuenta completa
-    const updateResponse = await fetch(`http://localhost:8080/CRUDBankServerSide/webresources/account`, {
-        method: "PUT",
-        headers: {
-            "Content-Type": "application/json",
-            "Accept": "application/json"
-        },
-        body: JSON.stringify(account)
-    });
-
-    if (!updateResponse.ok) throw new Error("Error actualizando el balance de la cuenta");
-}
-
+// --- Deshacer último movimiento ---
 async function undoLastMovement() {
     try {
-        // Obtener movimientos
-        const response = await fetch(`${url}/account/${accountId}`, {
-            headers: { "Accept": "application/json" }
+        const response = await fetch(`${url}/account/${activeAccountId}`, {
+            headers: {"Accept": "application/json"}
         });
 
-        if (!response.ok) throw new Error(`Error al obtener movimientos: ${response.status}`);
+        if (!response.ok)
+            throw new Error("Error obteniendo movimientos");
 
         const movimientos = await response.json();
-
         if (movimientos.length === 0) {
             alert("No hay movimientos para deshacer");
             return;
         }
 
-        // Borrar último movimiento
         const lastMovement = movimientos[movimientos.length - 1];
+        const deleteResponse = await fetch(`${url}/${lastMovement.id}`, {method: "DELETE"});
 
-        const deleteResponse = await fetch(`${url}/${lastMovement.id}`, {
-            method: "DELETE",
-            headers: { "Accept": "application/json" }
-        });
+        if (!deleteResponse.ok)
+            throw new Error("No se pudo deshacer el movimiento");
 
-        if (!deleteResponse.ok) throw new Error(`No se pudo deshacer el movimiento: ${deleteResponse.status}`);
-
-        // Actualizar balance de la cuenta
-        await recargaCuenta(movimientos);
-
-        // Recargar lista
-        await cargarMovimientos();
-
+        cargarMovimientos();
         alert("Último movimiento deshecho correctamente");
-
-    } catch (error) {
-        alert("Error: " + error.message);
+    } catch (err) {
+        alert("Error: " + err.message);
     }
 }
-// Integración con el botón
-document.getElementById("btnUndoMovement").addEventListener("click", undoLastMovement);
-
-
-
-
-
-
-
-document.getElementById("movementForm").reset(); // limpiar formulario
-cargarMovimientos();
-// Selecciona el botón
-const btnCreateMovement = document.getElementById("btnCreateMovement");
-const movementsList = document.getElementById("movementsList");
-
-// Asigna la función que se ejecutará al hacer clic
-btnCreateMovement.addEventListener("click", function() {
-  
-    createMovementsHandler();
-});
-const movementForm = document.getElementById("movementForm");
-movementForm.addEventListener("submit", movementCreator);
-
-
