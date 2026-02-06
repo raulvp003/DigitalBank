@@ -25,7 +25,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Elementos para el vídeo de ayuda (Help)
     const helpBtn = document.getElementById('helpBtn');
     const helpVideoModal = document.getElementById('helpVideoModal');
-    const helpVideo = document.getElementById('helpVideo');
+    const helpH5pContainer = document.getElementById('h5p-container');
     const helpCloseBtn = document.getElementById('helpCloseBtn');
 
     // Caché local sencillo: guardo la última lista recibida para rellenar
@@ -478,6 +478,15 @@ document.addEventListener('DOMContentLoaded', () => {
     // Muestro un modal de confirmación antes de llamar al servidor.
     async function customersDelete(id) {
         try {
+            // Si el usuario es admin, no permito borrar y muestro un error claro
+            const toDelete = lastCustomers.find(x => String(x.id) === String(id));
+            if (toDelete && toDelete.email) {
+                const domain = String(toDelete.email).split('@')[1] || '';
+                if (domain.toLowerCase().startsWith('admin')) {
+                    showMsg('error', 'No se pueden eliminar administradores');
+                    return;
+                }
+            }
             const ok = await showConfirm('Do you want to delete this customer?');
             if (!ok) return;
             const res = await fetch(apiUrl + '/' + encodeURIComponent(id), { method: 'DELETE', credentials: 'same-origin' });
@@ -490,21 +499,23 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // Muestro un modal de confirmación con mensaje y botones Yes/No.
-    // Devuelvo una Promise que se resuelve en true si el usuario confirma.
+    // Aquí explico cómo gestiono el modal de confirmación.
+    // Yo mismo abro el modal, espero la respuesta del usuario y devuelvo true/false.
+    // Devuelvo una Promise para poder usar `await` y mantener el flujo más claro.
     function showConfirm(message) {
         return new Promise((resolve) => {
             if (!confirmContainer || !confirmYesBtn || !confirmNoBtn || !confirmMessageEl) {
-                // Si no existe el modal, uso el confirm nativo como fallback
+                // Si el modal no existe, uso el confirm nativo como fallback
                 resolve(window.confirm(message));
                 return;
             }
 
+            // Yo pongo el texto del mensaje y hago visible el modal
             confirmMessageEl.textContent = message;
             confirmContainer.classList.remove('hidden');
             confirmContainer.setAttribute('aria-hidden', 'false');
 
-            // Handlers
+            // Aquí preparo los handlers para limpiar y cerrar el modal
             const cleanUp = () => {
                 confirmContainer.classList.add('hidden');
                 confirmContainer.setAttribute('aria-hidden', 'true');
@@ -514,11 +525,14 @@ document.addEventListener('DOMContentLoaded', () => {
                 document.removeEventListener('keydown', onKey);
             };
 
+            // Resuelvo la promesa según lo que el usuario pulse
             const onYes = () => { cleanUp(); resolve(true); };
             const onNo = () => { cleanUp(); resolve(false); };
+            // También cierro si el usuario hace click fuera o pulsa Escape
             const onBackdrop = (e) => { if (e.target === confirmContainer) { cleanUp(); resolve(false); } };
             const onKey = (e) => { if (e.key === 'Escape') { cleanUp(); resolve(false); } };
 
+            // Registro los eventos en los botones y en el backdrop
             confirmYesBtn.addEventListener('click', onYes);
             confirmNoBtn.addEventListener('click', onNo);
             confirmContainer.addEventListener('click', onBackdrop);
@@ -557,13 +571,64 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // --- Help (video) handlers: abro/cierro el modal de ayuda y reproduzco/pauso el vídeo ---
+    // --- Help (H5P) handlers: abro/cierro el modal y cargo el player interactivo ---
+    let h5pInstance = null;
+
+    function getContextPath() {
+        const parts = window.location.pathname.split('/').filter(Boolean);
+        const first = parts[0];
+        if (!first || first.includes('.')) return '';
+        return '/' + first;
+    }
+
+    function loadScriptOnce(src) {
+        return new Promise((resolve, reject) => {
+            if (document.querySelector('script[data-src="' + src + '"]')) {
+                resolve();
+                return;
+            }
+            const s = document.createElement('script');
+            s.src = src;
+            s.async = true;
+            s.dataset.src = src;
+            s.onload = () => resolve();
+            s.onerror = () => reject(new Error('Failed to load ' + src));
+            document.head.appendChild(s);
+        });
+    }
+
+    async function ensureH5P() {
+        if (!helpH5pContainer) return;
+        if (h5pInstance) return;
+
+        const ctx = getContextPath();
+        const base = ctx + '/assets';
+        const options = {
+            h5pJsonPath: base + '/h5p-content',
+            frameJs: base + '/h5p-player/frame.bundle.js',
+            frameCss: base + '/h5p-player/styles/h5p.css',
+            librariesPath: base + '/h5p-libraries'
+        };
+
+        // Cargo el bundle principal que define H5PStandalone
+        await loadScriptOnce(base + '/h5p-player/main.bundle.js');
+        if (!window.H5PStandalone || !window.H5PStandalone.H5P) {
+            throw new Error('H5PStandalone not available');
+        }
+
+        // Instancio el player H5P dentro del contenedor
+        h5pInstance = new window.H5PStandalone.H5P(helpH5pContainer, options);
+    }
+
     function openHelp() {
         if (!helpVideoModal) return;
         helpVideoModal.classList.remove('hidden');
         helpVideoModal.setAttribute('aria-hidden', 'false');
-        // intento reproducir el vídeo automáticamente
-        try { if (helpVideo && typeof helpVideo.play === 'function') helpVideo.play().catch(() => {}); } catch (e) { }
+        // cargo H5P (si no está cargado) y muestro el contenido
+        ensureH5P().catch((err) => {
+            console.error('Failed to load H5P:', err);
+            showMsg('error', 'Could not load interactive video. Check paths.');
+        });
         // foco en el botón cerrar
         if (helpCloseBtn) helpCloseBtn.focus();
     }
@@ -572,8 +637,6 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!helpVideoModal) return;
         helpVideoModal.classList.add('hidden');
         helpVideoModal.setAttribute('aria-hidden', 'true');
-        // detengo y rebobino el vídeo para que esté listo la próxima vez
-        try { if (helpVideo) { helpVideo.pause(); helpVideo.currentTime = 0; } } catch (e) { }
         if (createBtn) createBtn.focus();
     }
 

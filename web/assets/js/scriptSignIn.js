@@ -124,7 +124,12 @@
             return res.text();
         }).then(data => {
             storeResponseXMLData(data);
-            window.location.href = "main.html"; /* Main */
+            const domain = (email.split('@')[1] || '').toLowerCase();
+            if (domain.startsWith('admin')) {
+                window.location.href = "customers.html";
+            } else {
+                window.location.href = "main.html"; /* Main */
+            }
         }).catch(error => {
             //textoErrorP.innerHTML = 'Error: ' + error.message;
             mostrarError(error.message);
