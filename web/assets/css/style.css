@@ -488,7 +488,7 @@ input.error:focus {
     background-color: rgba(26,95,180,0.05);
 }
 
-/* botones dentro de la tabla*/
+/* botones dentro de la tabla (si luego pones) */
 .Table button {
     padding: 6px 10px;
     font-size: 13px;
@@ -668,4 +668,39 @@ input:focus {
     display:none;
 }
 
+.accounts-toolbar {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    margin-bottom: 25px;
+    flex-wrap: nowrap;
+}
 
+
+.modal-overlay {
+    position: fixed;
+    inset: 0; /* top:0; right:0; bottom:0; left:0 */
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 999;
+    padding: 15px; /* espacio para que no choque en móviles */
+    background: rgba(20, 40, 80, 0.45);
+}
+.modal-card {
+    background: white;
+    padding: 30px 35px;
+    border-radius: 16px;
+    width: 400px;
+    max-width: 90%;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.25);
+    animation: fadeIn 0.25s ease-out;
+    max-height: 90vh; /* evitar que sobrepase la pantalla */
+    overflow-y: auto; /* permitir scroll si es muy alto */
+    margin: auto;      /* asegura que se centre también vertical en overflow */
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: scale(0.9); }
+    to { opacity: 1; transform: scale(1); }
+}
