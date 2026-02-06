@@ -1,13 +1,15 @@
+
 /* ===== BASE ===== */
 * { margin: 0; padding: 0; box-sizing: border-box; }
 
 body {
     font-family: Arial, sans-serif;
-    background: linear-gradient(135deg, #d4e4ff 0%, #a8c8ff 100%);
+    background: linear-gradient(135deg, #a0c4ff 0%, #3a7bd5 100%);
     color: #333;
     min-height: 100vh;
     transition: background 0.3s, color 0.3s;
 }
+
 
 /* ===== NAVBAR ===== */
 .navbar {
@@ -170,6 +172,30 @@ body {
 .form-header p {
     color: #5c6166;
     font-size: 16px;
+}
+
+/* Actions row: alinear botones a la derecha y evitar que ocupen todo el ancho */
+.actions-row {
+    display: flex;
+    justify-content: center; /* centro el botón en la fila */
+    gap: 12px;
+    align-items: center;
+}
+
+.actions-row .submit-btn {
+    width: auto;            /* anulamos width:100% para esta fila */
+    padding: 10px 16px;
+    margin: 0;              /* quitar el margin vertical grande de botones global */
+    min-width: 130px;      /* ancho mínimo razonable */
+    display: inline-flex;
+    justify-content: center;
+}
+
+@media (max-width: 768px) {
+    /* en móviles los botones vuelven a ser full-width para facilidad de uso */
+    .actions-row .submit-btn {
+        width: 100%;
+    }
 }
 
 /* Form Elements */
@@ -417,8 +443,10 @@ input.error:focus {
     }
 }
 
+/* ===== TABLE (shared) ===== */
 
-/* ===== TABLA ===== */
+/* CSS — used for all table pages */
+
 .Table {
     border-collapse: collapse;
     width: 100%;
@@ -447,15 +475,17 @@ input.error:focus {
     background-color: rgba(26,95,180,0.05);
 }
 
-/* botones dentro de la tabla*/
+/* botones dentro de la tabla (si luego pones) */
 .Table button {
     padding: 6px 10px;
     font-size: 13px;
     border-radius: 6px;
 }
 
+
+/* Make the table adapt to the container and wrap cell content so no horizontal scrollbar is needed */
 .Table {
-    table-layout: auto;
+    table-layout: fixed; /* columns honor width rules and cells wrap */
     width: 100%;
 }
 
@@ -463,13 +493,201 @@ input.error:focus {
 .Table td {
     white-space: normal;   /* permite saltos de línea */
     word-break: break-word;
+    padding: 14px 12px;   /* un poco más de espacio para lectura */
+    line-height: 1.35;
 }
+
+/* Short, general sizing: let the table wrap text and keep the actions column narrow */
+.Table { table-layout: fixed; }
+.Table th, .Table td { 
+    overflow-wrap: anywhere; }
+.Table th:last-child, .Table td:last-child { 
+    width: 8%; 
+    text-align: center; 
+    white-space: nowrap; }
 
 .table-responsive {
     width: 100%;
-    overflow-x: auto;   
+    overflow-x: visible;   /* permito que el contenido fluya y las celdas se envuelvan */
 }
 
-.table-page .container-form {
-    max-width: 1200px;   
+.table-page .container-form,
+.customers-page .container-form {
+    max-width: 1600px;   /* o 1400px si quieres */
+}
+
+/* Inline form container for customers (no modal) */
+.customers-page #formContainer {
+    display: block;
+    margin-top: 20px;
+    background: transparent;
+    padding: 0;
+}
+
+
+/* Modal popup para el formulario de customers */
+.customers-page #formContainer.modal {
+    position: fixed;
+    inset: 0; /* top:0; right:0; bottom:0; left:0 */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0,0,0,0.45);
+    z-index: 300;
+    padding: 20px;
+}
+
+.customers-page #formContainer.modal .modal-content {
+    width: 100%;
+    max-width: 740px;
+    background: rgba(255,255,255,0.98);
+    border-radius: 14px;
+    padding: 22px 26px;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.35);
+    border: 1px solid rgba(0,0,0,0.06);
+}
+
+/* Al ocultar con .hidden mantenemos display none */
+.customers-page #formContainer.hidden { display: none !important; }
+
+.customers-page #confirmContainer.modal {
+    position: fixed;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0,0,0,0.45);
+    z-index: 305;
+    padding: 20px;
+}
+
+.customers-page #confirmContainer.modal .modal-content {
+    width: 100%;
+    max-width: 420px;
+    background: rgba(255,255,255,0.98);
+    border-radius: 12px;
+    padding: 18px 20px;
+    box-shadow: 0 12px 30px rgba(0,0,0,0.25);
+    border: 1px solid rgba(0,0,0,0.06);
+    text-align: center;
+}
+
+/* Al ocultar con .hidden mantenemos display none */
+.customers-page #confirmContainer.hidden { display: none !important; }
+
+
+.customers-page #formContainer .submit-btn {
+    padding: 10px 16px;
+}
+
+
+
+.hidden { display: none !important; }
+
+
+/* ===== MOVEMENTS CSS  ===== */
+
+
+#movementsList {
+    padding: 0;
+    margin: 20px auto;
+    max-width: 9000px;
+    font-family: Arial, sans-serif;
+}
+
+.Table tr.income:hover {
+    background-color: #d4f7d4;
+}
+
+.Table tr.expense:hover {
+    background-color: #f7d4d4;
+}
+
+
+.container-form.table-page {
+    max-width: 1200px; /* ancho mayor */
+    width: 95%;        /* ocupa casi todo el ancho disponible */
+    margin: 8% auto; /* margen superior/inferior */
+}
+
+.Table {
+    width: 100%;
+    table-layout: fixed;
+    border-collapse: collapse;
+    font-size: 15px;
+}
+
+.Table th,
+.Table td {
+    padding: 18px 16px; /* más espacio interno */
+    text-align: left;
+    vertical-align: middle;
+}
+
+.Table th {
+    text-align: center;
+    font-weight: 700;
+}
+
+.Table tbody tr {
+    height: 55px; /* más separación entre filas */
+}
+
+input,select,option{
+    padding: 10px 12px;
+    border: 2px solid #c5d9ff;
+    border-radius: 8px;
+    font-size: 14px;
+    transition: all 0.3s; 
+    width: 100%;
+} 
+
+input:focus { 
+    outline: none; 
+    border-color: #3584e4; 
+    box-shadow: 0 0 0 3px rgba(53, 132, 228, 0.2); 
+}
+
+#noMovementsMsg {
+    text-align:center;
+    font-size:25px;
+    color:#555; 
+    display:none;
+}
+
+.accounts-toolbar {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    margin-bottom: 25px;
+    flex-wrap: nowrap;
+}
+
+
+.modal-overlay {
+    position: fixed;
+    inset: 0; /* top:0; right:0; bottom:0; left:0 */
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 999;
+    padding: 15px; /* espacio para que no choque en móviles */
+    background: rgba(20, 40, 80, 0.45);
+}
+.modal-card {
+    background: white;
+    padding: 30px 35px;
+    border-radius: 16px;
+    width: 400px;
+    max-width: 90%;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.25);
+    animation: fadeIn 0.25s ease-out;
+    max-height: 90vh; /* evitar que sobrepase la pantalla */
+    overflow-y: auto; /* permitir scroll si es muy alto */
+    margin: auto;      /* asegura que se centre también vertical en overflow */
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: scale(0.9); }
+    to { opacity: 1; transform: scale(1); }
 }

@@ -1,0 +1,633 @@
+/*
+ =========
+ CONSTANTS
+ =========
+*/
+const BASE_URL = "/CRUDBankServerSide/webresources/account";
+let deleteMode = false;
+
+/*
+ =========
+ GENERATOR 
+ =========
+*/
+function* accountRowGenerator(accounts){
+    for (const acc of accounts) {
+        const tr = document.createElement("tr");
+
+        // Columna checkbox SOLO en deleteMode
+        if (deleteMode) {
+            const checkTd = document.createElement("td");
+            const checkbox = document.createElement("input");
+            checkbox.type = "checkbox";
+            checkbox.value = acc.id;
+            checkbox.classList.add("delete-checkbox");
+            checkbox.setAttribute("aria-label", "Select account " + acc.id);
+
+            checkTd.appendChild(checkbox);
+            tr.appendChild(checkTd);
+        }
+
+        const fields = [
+            "id",
+            "description",
+            "type",
+            "balance",
+            "creditLine",
+            "beginBalance",
+            "beginBalanceTimestamp"
+        ];
+
+        fields.forEach(field => {
+            const td = document.createElement("td");
+            if (field === "beginBalanceTimestamp") {
+                // Convertir string ISO a Date
+                const date = new Date(acc[field]);
+                // Formatear con Intl.DateTimeFormat en inglés
+                td.textContent = new Intl.DateTimeFormat('en-US', {
+                    year: 'numeric',
+                    month: '2-digit',
+                    day: '2-digit',
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    second: '2-digit',
+                    hour12: false
+                }).format(date);
+            } else {
+                td.textContent = acc[field];
+            }
+            tr.appendChild(td);
+        });
+        
+        // === ACCIONES ===
+        const actionsTd = document.createElement("td");
+
+        const movBtn = document.createElement("button");
+        movBtn.type = "button";
+        movBtn.textContent = "Movements";
+        movBtn.classList.add("submit-btn");
+        movBtn.setAttribute("aria-label", "View movements of account " + acc.id);
+        movBtn.onclick = () => goToMovements(acc);
+
+        const editBtn = document.createElement("button");
+        editBtn.type = "button";
+        editBtn.textContent = "Modify";
+        editBtn.classList.add("submit-btn");
+        editBtn.setAttribute("aria-label", "Modify account " + acc.id);
+        editBtn.onclick = () => showUpdateForm(acc);
+
+        actionsTd.appendChild(movBtn);
+        actionsTd.appendChild(editBtn);
+        tr.appendChild(actionsTd);         
+
+
+        yield tr;
+    }
+}
+
+/*
+ ====================
+ FETCH ACCOUNTS (XML)
+ ====================
+*/
+async function fetchAccountsByCustomerId(customerId) {
+    const response = await fetch(`${BASE_URL}/customer/${customerId}`, {
+        headers: { "Accept": "application/xml" }
+    });
+
+    if (!response.ok) {
+        throw new Error("Error fetching accounts");
+    }
+
+    const xmlText = await response.text();
+    return parseAccountsXML(xmlText);
+}
+
+/*
+ ===========================
+ PARSE XML → ACCOUNT OBJECTS
+ ===========================
+*/
+function parseAccountsXML(xmlText) {
+    const parser = new DOMParser();
+    const xmlDoc = parser.parseFromString(xmlText, "application/xml");
+
+    const accounts = [];
+    const accountNodes = xmlDoc.getElementsByTagName("account");
+
+    for (const accountNode of accountNodes) {
+        const id = accountNode.querySelector(":scope > id").textContent.trim();
+        const description = accountNode.querySelector(":scope > description").textContent.trim();
+        const balance = Number(accountNode.querySelector(":scope > balance").textContent);
+        const creditLine = Number(accountNode.querySelector(":scope > creditLine").textContent);
+        const beginBalance = Number(accountNode.querySelector(":scope > beginBalance").textContent);
+        const beginBalanceTimestamp =
+            accountNode.querySelector(":scope > beginBalanceTimestamp").textContent.trim();
+        const typeValue = accountNode.querySelector(":scope > type").textContent.trim();
+
+        const type = typeValue === "CREDIT" ? "CREDIT" : "STANDARD";
+
+        accounts.push(
+            new Account(
+                id,
+                description,
+                balance,
+                creditLine,
+                beginBalance,
+                beginBalanceTimestamp,
+                type
+            )
+        );
+    }
+    return accounts;
+}
+/*
+function parseAccountsXML(xmlText) {
+    const parser = new DOMParser();
+    const xmlDoc = parser.parseFromString(xmlText, "application/xml");
+
+    const accounts = [];
+    const accountNodes = xmlDoc.getElementsByTagName("account");
+
+    for (const accountNode of accountNodes) {
+        const id = accountNode.getElementsByTagName("id")[0].textContent.trim();
+        const description = accountNode.getElementsByTagName("description")[0].textContent.trim();
+        const balance = Number(accountNode.getElementsByTagName("balance")[0].textContent);
+        const creditLine = Number(accountNode.getElementsByTagName("creditLine")[0].textContent);
+        const beginBalance = Number(accountNode.getElementsByTagName("beginBalance")[0].textContent);
+        const beginBalanceTimestamp = accountNode.getElementsByTagName("beginBalanceTimestamp")[0].textContent.trim();
+        const typeValue = accountNode.getElementsByTagName("type")[0].textContent.trim();
+
+        const type = typeValue === "CREDIT" || typeValue === "1" ? "CREDIT" : "STANDARD";
+
+        accounts.push(
+            new Account(
+                id,
+                description,
+                balance,
+                creditLine,
+                beginBalance,
+                beginBalanceTimestamp,
+                type
+            )
+        );
+    }
+    return accounts;
+}*/
+/* 
+ ===========
+ BUILD TABLE
+ ===========
+*/
+async function buildAccountsTable() {
+    const customerId = sessionStorage.getItem("customer.id");
+    
+    //Llamada funcion delete mode
+    rebuildTableHeader();
+
+    if (!customerId) {
+        alert("User not logged in");
+        window.location.href = "../signin/signin.html";
+        return;
+    }
+
+    try {
+        const accounts = await fetchAccountsByCustomerId(customerId);
+        const tbody = document.querySelector("#accountsTable tbody");
+        tbody.innerHTML = "";
+
+        const rowGenerator = accountRowGenerator(accounts);
+        for (const row of rowGenerator) {
+            tbody.appendChild(row);
+        }
+    } catch (error) {
+        console.error(error);
+        alert("Could not load accounts");
+    }
+}
+
+
+
+
+/*
+ ====================================
+ JS PARA MOSTRAR / OCULTAR FORMULARIO
+ ====================================
+*/
+function showCreateAccountForm() {
+    document.getElementById("createAccountContainer").style.display = "block";
+}
+
+function hideCreateAccountForm() {
+    document.getElementById("createAccountContainer").style.display = "none";
+    document.getElementById("createAccountForm").reset();
+    toggleCreditLine();
+}
+
+/*
+ =============================
+ MOSTRAR / OCULTAR CREDIT LINE
+ =============================
+*/
+function toggleCreditLine() {
+    const type = document.getElementById("type").value;
+    const creditLineContainer = document.getElementById("creditLineContainer");
+
+    if (type === "1") {
+        creditLineContainer.style.display = "block";
+    } else {
+        creditLineContainer.style.display = "none";
+        document.getElementById("creditLine").value = 0;
+    }
+}
+
+/*
+ ==============
+ CREATE ACCOUNT
+ ==============
+*/
+document.getElementById("createAccountForm").addEventListener("submit", createAccount);
+
+async function createAccount(event) {
+    event.preventDefault();
+
+    const customerId = sessionStorage.getItem("customer.id");
+    if (!customerId) {
+        alert("User not logged in");
+        return;
+    }
+
+    const description = document.getElementById("description").value.trim();
+    const typeValue = document.getElementById("type").value;
+    const creditLineInput = document.getElementById("creditLine").value;
+
+    if (!description) {
+        alert("Description is required");
+        return;
+    }
+
+    const id = Date.now(); // generado en cliente
+    const beginBalance = 100;
+    const balance = 100;
+    const beginBalanceTimestamp = new Date().toISOString();
+
+    let type;
+    let creditLine = 0;
+
+    if (typeValue === "0") {
+        type = "STANDARD";
+        creditLine = 0;
+    } else {
+        type = "CREDIT";
+        creditLine = Number(creditLineInput);
+
+        if (creditLine < 0 || creditLine > 10000) {
+            alert("Credit line must be between 0 and 10000");
+            return;
+        }
+    }
+
+    const xml = `
+    <account>
+        <id>${id}</id>
+        <description>${description}</description>
+        <balance>${balance}</balance>
+        <creditLine>${creditLine}</creditLine>
+        <beginBalance>${beginBalance}</beginBalance>
+        <beginBalanceTimestamp>${beginBalanceTimestamp}</beginBalanceTimestamp>
+        <type>${type}</type>
+        <customers>
+            <id>${customerId}</id>
+        </customers>
+    </account>
+    `.trim();
+        
+    try {
+        const response = await fetch(
+            "/CRUDBankServerSide/webresources/account",
+            {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/xml"
+                },
+                body: xml
+            }
+        );
+
+        if (!response.ok)
+            throw new Error("Error creating account");
+
+        alert("Account created successfully");
+
+        // limpiar formulario
+        event.target.reset();
+        toggleCreditLine();
+
+        // recargar tabla de cuentas
+        hideCreateAccountForm();
+        await buildAccountsTable();
+        
+    } catch (error) {
+        console.error(error);
+        alert("Error: " + error.message);
+    }
+}
+
+/*
+ ==============
+ DELETE ACCOUNT
+ ==============   
+*/
+async function deleteAccount(accountId) {
+    if (!confirm("Are you sure you want to delete this account?"))
+        return;
+
+    try {
+        const response = await fetch(
+            `${BASE_URL}/${accountId}`,
+            { method: "DELETE" }
+        );
+
+        if (!response.ok)
+            throw new Error("Error deleting account");
+
+        alert("Account deleted successfully");
+        await buildAccountsTable();
+
+    } catch (error) {
+        console.error(error);
+        alert("Error: " + error.message);
+    }
+}
+/*
+ ==========================================
+ AJUSTAR <HEAD> CUANDO ENTRA EN DELETE MODE 
+ ==========================================
+*/
+function rebuildTableHeader() {
+    const thead = document.querySelector("#accountsTable thead tr");
+    thead.innerHTML = "";
+
+    if (deleteMode) {
+        const th = document.createElement("th");
+        th.setAttribute("scope", "col");
+        th.textContent = "";
+        thead.appendChild(th);
+    }
+
+    const headers = [
+        "ID",
+        "Description",
+        "Type",
+        "Balance",
+        "Credit Line",
+        "Begin Balance",
+        "Begin Balance Date",
+        "Actions"
+    ];
+
+    headers.forEach(text => {
+        const th = document.createElement("th");
+        th.textContent = text;
+        th.setAttribute("scope", "col");
+        thead.appendChild(th);
+    });
+}
+/*
+ ==============================
+ ACTIVAR/DESACTIVAR DELETE MODE
+ ==============================
+*/
+async function toggleDeleteMode() {
+    deleteMode = !deleteMode;
+
+    document.getElementById("confirmDeleteBtn").style.display =
+        deleteMode ? "inline-block" : "none";
+
+    await buildAccountsTable();
+}
+
+/*
+ ================================
+ CONFIRMAR Y BORRAR SELECCIONADAS
+ ================================
+*/
+async function accountHasMovements(accountId) {
+    const response = await fetch(
+        `/CRUDBankServerSide/webresources/movement/account/${accountId}`,
+        { headers: { "Accept": "application/xml" } }
+    );
+
+    if (!response.ok) {
+        throw new Error("Error checking movements");
+    }
+
+    const xmlText = await response.text();
+    const xmlDoc = new DOMParser().parseFromString(xmlText, "application/xml");
+    const movements = xmlDoc.getElementsByTagName("movement");
+
+    return movements.length > 0;
+}
+
+
+async function confirmDelete() {
+    const checked = document.querySelectorAll(".delete-checkbox:checked");
+
+    if (checked.length === 0) {
+        alert("Select at least one account");
+        return;
+    }
+    
+    // 1. Comprobar movimientos
+    for (const cb of checked) {
+        const accountId = cb.value;
+
+        const hasMovements = await accountHasMovements(accountId);
+
+        if (hasMovements) {
+            alert(`Account ${accountId} has movements and cannot be deleted.`);
+            return;
+        }
+    }    
+    
+    // 2. Confirmación final
+    if (!confirm(`Delete ${checked.length} account(s)? It's irreversible.`))
+        return;
+
+    try {
+        for (const cb of checked) {
+            const accountId = cb.value;
+
+            const response = await fetch(
+                `${BASE_URL}/${accountId}`,
+                { method: "DELETE" }
+            );
+
+            if (!response.ok)
+                throw new Error(`Error deleting account ${accountId}`);
+        }
+
+        alert("Accounts deleted successfully");
+
+        deleteMode = false;
+        document.getElementById("confirmDeleteBtn").style.display = "none";
+        await buildAccountsTable();
+
+    } catch (error) {
+        console.error(error);
+        alert(error.message);
+    }
+}
+
+
+
+/*
+ ==============
+ UPDATE ACCOUNT
+ ==============
+*/
+document.getElementById("updateAccountForm").addEventListener("submit", updateAccount);
+
+async function updateAccount(event){
+    event.preventDefault();
+
+    const newDescription = document.getElementById("updateDescription").value.trim();
+    let newCreditLine = accountToUpdate.creditLine;
+
+    if(accountToUpdate.type === "CREDIT"){
+        newCreditLine = document.getElementById("updateCreditLine").value;
+    }
+
+    const xml = `
+    <account>
+        <id>${accountToUpdate.id}</id>
+        <description>${newDescription}</description>
+        <balance>${accountToUpdate.balance}</balance>
+        <creditLine>${newCreditLine}</creditLine>
+        <beginBalance>${accountToUpdate.beginBalance}</beginBalance>
+        <beginBalanceTimestamp>${accountToUpdate.beginBalanceTimestamp}</beginBalanceTimestamp>
+        <type>${accountToUpdate.type}</type>
+        <customers>
+            <id>${sessionStorage.getItem("customer.id")}</id>
+            <city>${sessionStorage.getItem("customer.city")}</city>
+            <email>${sessionStorage.getItem("customer.email")}</email>
+            <firstName>${sessionStorage.getItem("customer.firstName")}</firstName>
+            <lastName>${sessionStorage.getItem("customer.lastName")}</lastName>
+            <middleInitial>${sessionStorage.getItem("customer.middleInitial")}</middleInitial>
+            <password>${sessionStorage.getItem("customer.password")}</password>
+            <phone>${sessionStorage.getItem("customer.phone")}</phone>
+            <state>${sessionStorage.getItem("customer.state")}</state>
+            <street>${sessionStorage.getItem("customer.street")}</street>
+            <zip>${sessionStorage.getItem("customer.zip")}</zip>     
+        </customers>
+    </account>
+    `.trim();
+
+    try{
+        const response = await fetch(BASE_URL, {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/xml"
+            },
+            body: xml
+        });
+
+        if(!response.ok) throw new Error("Error updating account");
+
+        alert("Account updated");
+        hideUpdateForm();
+        buildAccountsTable();
+
+    }catch(err){
+        alert(err.message);
+    }
+}
+
+
+/*
+ ================================
+ GUARDAR CUENTAS E IR A MOVEMENTS
+ ================================
+*/
+/*
+function goToMovements(account){
+    sessionStorage.setItem("account", JSON.stringify(account));
+    window.location.href = "movements.html";
+}*/
+function goToMovements(account) {
+    // Obtener todos los IDs de las cuentas en la tabla
+    const tbody = document.querySelector("#accountsTable tbody");
+    const rows = tbody.querySelectorAll("tr");
+
+    const accountIds = Array.from(rows).map(row => {
+        // El primer td visible es el ID, si no estás en deleteMode
+        // Si estás en deleteMode, ajusta index según corresponda
+        let idCellIndex = deleteMode ? 1 : 0;
+        return row.cells[idCellIndex].textContent.trim();
+    });
+
+    sessionStorage.setItem("accountIds", JSON.stringify(accountIds));
+    window.location.href = "movements.html";
+}
+
+
+/*
+ ============================
+ MOSTRAR FORMULARIO CON DATOS
+ ============================
+*/
+let accountToUpdate = null;
+
+function showUpdateForm(account){
+    accountToUpdate = account;
+
+    document.getElementById("updateAccountContainer").style.display = "block";
+    document.getElementById("updateDescription").value = account.description;
+
+    if(account.type === "CREDIT"){
+        document.getElementById("updateCreditLineContainer").style.display = "block";
+        document.getElementById("updateCreditLine").value = account.creditLine;
+    } else {
+        document.getElementById("updateCreditLineContainer").style.display = "none";
+    }
+}
+
+function hideUpdateForm(){
+    document.getElementById("updateAccountContainer").style.display = "none";
+}
+
+/*
+ =====
+ VIDEO
+ =====
+*/
+let tutorialVisible = false;
+let h5pInstance = null;
+
+function toggleTutorial() {
+    const box = document.getElementById("tutorialBox");
+    const container = document.getElementById("h5p-container");
+
+    tutorialVisible = !tutorialVisible;
+    box.style.display = tutorialVisible ? "block" : "none";
+
+    // Crear el H5P SOLO la primera vez que se abre
+    if (tutorialVisible && !h5pInstance) {
+        const options = {
+            h5pJsonPath: '/DigitalBank/assets/h5p-account',
+            frameJs: '/DigitalBank/assets/h5p-player/frame.bundle.js',
+            frameCss: '/DigitalBank/assets/h5p-player/styles/h5p.css',
+            librariesPath: '/DigitalBank/assets/h5p-libraries'
+        };
+
+        h5pInstance = new H5PStandalone.H5P(container, options);
+    }
+}
+
+/* 
+ =======
+ ON LOAD
+ =======
+*/
+buildAccountsTable();
+
