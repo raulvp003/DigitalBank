@@ -478,6 +478,15 @@ document.addEventListener('DOMContentLoaded', () => {
     // Muestro un modal de confirmación antes de llamar al servidor.
     async function customersDelete(id) {
         try {
+            // Si el usuario es admin, no permito borrar y muestro un error claro
+            const toDelete = lastCustomers.find(x => String(x.id) === String(id));
+            if (toDelete && toDelete.email) {
+                const domain = String(toDelete.email).split('@')[1] || '';
+                if (domain.toLowerCase().startsWith('admin')) {
+                    showMsg('error', 'No se pueden eliminar administradores');
+                    return;
+                }
+            }
             const ok = await showConfirm('Do you want to delete this customer?');
             if (!ok) return;
             const res = await fetch(apiUrl + '/' + encodeURIComponent(id), { method: 'DELETE', credentials: 'same-origin' });
@@ -490,21 +499,23 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // Muestro un modal de confirmación con mensaje y botones Yes/No.
-    // Devuelvo una Promise que se resuelve en true si el usuario confirma.
+    // Aquí explico cómo gestiono el modal de confirmación.
+    // Yo mismo abro el modal, espero la respuesta del usuario y devuelvo true/false.
+    // Devuelvo una Promise para poder usar `await` y mantener el flujo más claro.
     function showConfirm(message) {
         return new Promise((resolve) => {
             if (!confirmContainer || !confirmYesBtn || !confirmNoBtn || !confirmMessageEl) {
-                // Si no existe el modal, uso el confirm nativo como fallback
+                // Si el modal no existe, uso el confirm nativo como fallback
                 resolve(window.confirm(message));
                 return;
             }
 
+            // Yo pongo el texto del mensaje y hago visible el modal
             confirmMessageEl.textContent = message;
             confirmContainer.classList.remove('hidden');
             confirmContainer.setAttribute('aria-hidden', 'false');
 
-            // Handlers
+            // Aquí preparo los handlers para limpiar y cerrar el modal
             const cleanUp = () => {
                 confirmContainer.classList.add('hidden');
                 confirmContainer.setAttribute('aria-hidden', 'true');
@@ -514,11 +525,14 @@ document.addEventListener('DOMContentLoaded', () => {
                 document.removeEventListener('keydown', onKey);
             };
 
+            // Resuelvo la promesa según lo que el usuario pulse
             const onYes = () => { cleanUp(); resolve(true); };
             const onNo = () => { cleanUp(); resolve(false); };
+            // También cierro si el usuario hace click fuera o pulsa Escape
             const onBackdrop = (e) => { if (e.target === confirmContainer) { cleanUp(); resolve(false); } };
             const onKey = (e) => { if (e.key === 'Escape') { cleanUp(); resolve(false); } };
 
+            // Registro los eventos en los botones y en el backdrop
             confirmYesBtn.addEventListener('click', onYes);
             confirmNoBtn.addEventListener('click', onNo);
             confirmContainer.addEventListener('click', onBackdrop);
