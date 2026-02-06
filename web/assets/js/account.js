@@ -567,7 +567,7 @@ function goToMovements(account) {
     });
 
     sessionStorage.setItem("accountIds", JSON.stringify(accountIds));
-    window.location.href = "movements.html";
+    window.location.href = "MovementsPage.html";
 }
 
 
