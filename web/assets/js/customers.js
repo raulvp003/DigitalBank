@@ -25,7 +25,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Elementos para el vídeo de ayuda (Help)
     const helpBtn = document.getElementById('helpBtn');
     const helpVideoModal = document.getElementById('helpVideoModal');
-    const helpVideo = document.getElementById('helpVideo');
+    const helpH5pContainer = document.getElementById('h5p-container');
     const helpCloseBtn = document.getElementById('helpCloseBtn');
 
     // Caché local sencillo: guardo la última lista recibida para rellenar
@@ -557,13 +557,64 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // --- Help (video) handlers: abro/cierro el modal de ayuda y reproduzco/pauso el vídeo ---
+    // --- Help (H5P) handlers: abro/cierro el modal y cargo el player interactivo ---
+    let h5pInstance = null;
+
+    function getContextPath() {
+        const parts = window.location.pathname.split('/').filter(Boolean);
+        const first = parts[0];
+        if (!first || first.includes('.')) return '';
+        return '/' + first;
+    }
+
+    function loadScriptOnce(src) {
+        return new Promise((resolve, reject) => {
+            if (document.querySelector('script[data-src="' + src + '"]')) {
+                resolve();
+                return;
+            }
+            const s = document.createElement('script');
+            s.src = src;
+            s.async = true;
+            s.dataset.src = src;
+            s.onload = () => resolve();
+            s.onerror = () => reject(new Error('Failed to load ' + src));
+            document.head.appendChild(s);
+        });
+    }
+
+    async function ensureH5P() {
+        if (!helpH5pContainer) return;
+        if (h5pInstance) return;
+
+        const ctx = getContextPath();
+        const base = ctx + '/assets';
+        const options = {
+            h5pJsonPath: base + '/h5p-content',
+            frameJs: base + '/h5p-player/frame.bundle.js',
+            frameCss: base + '/h5p-player/styles/h5p.css',
+            librariesPath: base + '/h5p-libraries'
+        };
+
+        // Cargo el bundle principal que define H5PStandalone
+        await loadScriptOnce(base + '/h5p-player/main.bundle.js');
+        if (!window.H5PStandalone || !window.H5PStandalone.H5P) {
+            throw new Error('H5PStandalone not available');
+        }
+
+        // Instancio el player H5P dentro del contenedor
+        h5pInstance = new window.H5PStandalone.H5P(helpH5pContainer, options);
+    }
+
     function openHelp() {
         if (!helpVideoModal) return;
         helpVideoModal.classList.remove('hidden');
         helpVideoModal.setAttribute('aria-hidden', 'false');
-        // intento reproducir el vídeo automáticamente
-        try { if (helpVideo && typeof helpVideo.play === 'function') helpVideo.play().catch(() => {}); } catch (e) { }
+        // cargo H5P (si no está cargado) y muestro el contenido
+        ensureH5P().catch((err) => {
+            console.error('Failed to load H5P:', err);
+            showMsg('error', 'Could not load interactive video. Check paths.');
+        });
         // foco en el botón cerrar
         if (helpCloseBtn) helpCloseBtn.focus();
     }
@@ -572,8 +623,6 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!helpVideoModal) return;
         helpVideoModal.classList.add('hidden');
         helpVideoModal.setAttribute('aria-hidden', 'true');
-        // detengo y rebobino el vídeo para que esté listo la próxima vez
-        try { if (helpVideo) { helpVideo.pause(); helpVideo.currentTime = 0; } } catch (e) { }
         if (createBtn) createBtn.focus();
     }
 

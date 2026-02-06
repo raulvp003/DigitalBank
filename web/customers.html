@@ -30,8 +30,8 @@
           <div class="nav-menu" id="navMenu">
               <ul role="list">
                   <li><a href="index.html" aria-label="Go to home page">Home</a></li>
-                  <li><a href="../main.html" aria-label="Go to accounts page">Accounts</a></li>
-                  <li><a href="../MovementsPage.html" aria-label="Go to movements page">Movements</a></li>
+                  <li><a href="../Account.html" aria-label="Go to accounts page">Accounts</a></li>
+                 
               </ul>
           </div>
       </div>
@@ -146,7 +146,7 @@
         </div>
       </div>
       
-      <!-- Help video modal (simple player, se carga localmente desde assets) -->
+      <!-- Help video modal (H5P interactivo) -->
       <div id="helpVideoModal" class="modal mt-30 hidden" aria-hidden="true" role="dialog" aria-labelledby="helpTitle">
         <div class="modal-content form-card" role="document" style="max-width:900px; width:95%;">
           <div style="display:flex; justify-content:space-between; align-items:center;">
@@ -154,9 +154,7 @@
             <button type="button" class="submit-btn" id="helpCloseBtn" aria-label="Close help video">Close</button>
           </div>
           <div style="margin-top:12px;">
-            <video id="helpVideo" controls style="width:100%; height:auto; background:#000;" aria-label="Help video tutorial">
-              <source src="assets/h5p-content/content/videos/files-69845d92bdd1d.mp4" type="video/mp4">     
-            </video>
+            <div id="h5p-container" style="width:100%;" aria-label="Interactive help content"></div>
           </div>
         </div>
       </div>
