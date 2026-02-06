@@ -6,7 +6,7 @@ let accountIds = JSON.parse(sessionStorage.getItem("accountIds")) || [];
 if (accountIds.length === 0) {
     alert("No hay cuentas para mostrar");
 
-    accountIds = JSON.parse(sessionStorage.getItem("accountIds")) || [];
+    //accountIds = JSON.parse(sessionStorage.getItem("accountIds")) || ["1569874954", "2654785441"];
 
 }
 
@@ -49,15 +49,15 @@ async function cargarMovimientos() {
     try {
         for (const accountId of accountIds) {
             const response = await fetch(`${url}/account/${accountId}`, {
-                headers: { "Accept": "application/json" }
+                headers: {"Accept": "application/json"}
             });
             if (!response.ok)
                 throw new Error(`Error cargando movimientos de la cuenta ${accountId}`);
 
             const movimientos = await response.json();
             const totalBalance = movimientos.length > 0
-                ? movimientos[movimientos.length - 1].balance
-                : 0;
+                    ? movimientos[movimientos.length - 1].balance
+                    : 0;
 
             // Crear wrapper para scroll horizontal en móviles
             const tableWrapper = document.createElement("div");
@@ -97,8 +97,8 @@ async function cargarMovimientos() {
                 movimientos.forEach(m => {
                     const tr = document.createElement("tr");
                     const formattedTimestamp = m.timestamp
-                        ? new Date(m.timestamp).toLocaleString()
-                        : '';
+                            ? new Date(m.timestamp).toLocaleString()
+                            : '';
                     tr.innerHTML = `
                         <td data-label="ID">${m.id}</td>
                         <td data-label="Amount">${m.amount.toFixed(2)}</td>
@@ -149,8 +149,14 @@ async function movementCreator(event) {
         const tbody = document.getElementById(`movementsList-${activeAccountId}`);
         let previousBalance = 0;
         if (tbody && tbody.rows.length > 0) {
-            previousBalance = parseFloat(tbody.rows[tbody.rows.length - 1].cells[2].textContent);
+            const lastRow = tbody.rows[tbody.rows.length - 1];
+
+            // Ignorar la fila "No movements yet!"
+            if (lastRow.cells.length >= 3) {
+                previousBalance = parseFloat(lastRow.cells[2].textContent) || 0;
+            }
         }
+
 
         let totalBalance = operation === "Deposit" ? previousBalance + amountInput : previousBalance - amountInput;
         if (operation === "Payment" && amountInput > previousBalance)

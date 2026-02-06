@@ -636,8 +636,7 @@ input.error:focus {
 .container-form.table-page {
     max-width: 1200px;
     width: 90%;         /* ocupa casi todo el ancho del contenedor */
-    margin: 8% auto;    /* centrado vertical y horizontal */
-}
+    margin: 8% auto 3%;}
 
 /* Form Card específico para movimientos */
 #mvFormCard {
@@ -759,6 +758,22 @@ input:focus {
     transition: all 0.3s;
 }
 
+#h5p-container{
+    display: flex; 
+    flex-direction: column; 
+    justify-content: center; 
+    align-items: center;
+    
+}
+#h5p-container h1{
+    color: whitesmoke;
+}
+
+
+#h5p-container video{
+    margin-bottom: 5vh;
+    
+}
 /* For small screens */
 /* ===== MOVEMENTS MOBILE  ===== */
 
