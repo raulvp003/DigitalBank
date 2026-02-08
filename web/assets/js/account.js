@@ -6,7 +6,9 @@
 const BASE_URL = "/CRUDBankServerSide/webresources/account";
 let deleteMode = false;
 
-/*
+/**
+* @todo Formatear importes (balance, beginBalance y creditLine con separadores de miles y de decimales(máximo 2).
+
  =========
  GENERATOR 
  =========
@@ -247,7 +249,12 @@ function toggleCreditLine() {
  ==============
 */
 document.getElementById("createAccountForm").addEventListener("submit", createAccount);
-
+/**
+ * 
+ * @param {type} event
+ * @return {undefined}
+ * @fixme Al crear la cuenta se debe poder establecer por parte del usuario el saldo inicial de la cuenta (beginBalance). El saldo actual (balance) en el momento de la apertura será igual al saldo inicial.
+ */
 async function createAccount(event) {
     event.preventDefault();
 
@@ -267,6 +274,17 @@ async function createAccount(event) {
     }
 
     const id = Date.now(); // generado en cliente
+    //FIXME ver @fixme anterior
+    //TODO Utilizar la siguiente RegExp para validar que los importes (balance,beginBalance y creditLine) puedan introducirse con separador de decimales y de miles.
+    const esAmountRegex = /^(?:\d{1,15}|\d{1,3}(?:\.\d{3}){1,4})(?:,\d{1,2})?$/;
+        /* Explanation for esAmountRegex:
+          (?:                                # integer part options
+            \d{1,15}                         # 1 to 15 digits without thousand separator
+            | \d{1,3}(?:\.\d{3}){1,4}        # 1–3 digits, then 1–4 groups of ".ddd"
+           )
+          (?:,\d{1,2})?                      # optional decimal with 1 or 2 digits
+         */
+
     const beginBalance = 100;
     const balance = 100;
     const beginBalanceTimestamp = new Date().toISOString();
@@ -497,6 +515,15 @@ async function updateAccount(event){
     if(accountToUpdate.type === "CREDIT"){
         newCreditLine = document.getElementById("updateCreditLine").value;
     }
+    //TODO Utilizar la siguiente RegExp para validar que creditLine pueda introducirse con separador de decimales y de miles.
+    const esAmountRegex = /^(?:\d{1,15}|\d{1,3}(?:\.\d{3}){1,4})(?:,\d{1,2})?$/;
+        /* Explanation for esAmountRegex:
+          (?:                                # integer part options
+            \d{1,15}                         # 1 to 15 digits without thousand separator
+            | \d{1,3}(?:\.\d{3}){1,4}        # 1–3 digits, then 1–4 groups of ".ddd"
+           )
+          (?:,\d{1,2})?                      # optional decimal with 1 or 2 digits
+         */
 
     const xml = `
     <account>
