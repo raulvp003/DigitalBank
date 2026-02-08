@@ -266,7 +266,7 @@ document.addEventListener('DOMContentLoaded', () => {
         );
     }
 
-    // Verifico todo el formulario llamando a cada validador.
+    // Verifico el formulario llamando a cada validador.
     // Devuelvo true solo si todos los campos son válidos.
     // Esto evita enviar al servidor datos incompletos o inválidos.
 
@@ -350,7 +350,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // guardo localmente la lista para usarla al editar (evito otra llamada)
         lastCustomers = list;
-
+        //FIXME Sustituir esta iteración por el uso de una función generadora
         for (const c of list) {
             const tr = document.createElement('tr');
             const columns = ['id','firstName','lastName','middleInitial','street','city','state','zip','phone','email'];
@@ -476,6 +476,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Borrar un customer por id (DELETE)
     // Muestro un modal de confirmación antes de llamar al servidor.
+    /**
+    * @fixme Controlar que no se puedan borrar los Customer que tengan cuentas e informar al usuario de tal situación.
+    * Para lo anterior tendrá que hacer una petición GET /CRUDBankServerSide/webresources/account/customer/{id}. 
+    */
     async function customersDelete(id) {
         try {
             // Si el usuario es admin, no permito borrar y muestro un error claro
