@@ -47,6 +47,7 @@ async function cargarMovimientos() {
     container.innerHTML = ""; // limpiar tablas previas
 
     try {
+        //FIXME: Pedir solo los movimientos de la cuenta seleccionada en el selector de cuentas
         for (const accountId of accountIds) {
             const response = await fetch(`${url}/account/${accountId}`, {
                 headers: {"Accept": "application/json"}
@@ -94,6 +95,7 @@ async function cargarMovimientos() {
                 tr.innerHTML = `<td colspan="5">No movements yet!</td>`;
                 tbody.appendChild(tr);
             } else {
+                //FIXME: Utilizar una función generadora para generar el contenido de la tabla de movimientos y no un iterador forEach.
                 movimientos.forEach(m => {
                     const tr = document.createElement("tr");
                     const formattedTimestamp = m.timestamp
@@ -139,6 +141,16 @@ async function movementCreator(event) {
     event.preventDefault();
 
     try {
+       //TODO Utilizar la siguiente RegExp para validar que el importe pueda introducirse con separador de decimales y de miles.
+        const esAmountRegex = /^(?:\d{1,15}|\d{1,3}(?:\.\d{3}){1,4})(?:,\d{1,2})?$/;
+        /* Explanation for esAmountRegex:
+              (?:                                # integer part options
+                \d{1,15}                         # 1 to 15 digits without thousand separator
+                | \d{1,3}(?:\.\d{3}){1,4}        # 1–3 digits, then 1–4 groups of ".ddd"
+               )
+              (?:,\d{1,2})?                      # optional decimal with 1 or 2 digits
+        */
+
         const amountInput = parseFloat(document.getElementById("amount").value);
         const operation = document.getElementById("Operation").value;
 
@@ -161,7 +173,7 @@ async function movementCreator(event) {
         let totalBalance = operation === "Deposit" ? previousBalance + amountInput : previousBalance - amountInput;
         if (operation === "Payment" && amountInput > previousBalance)
             throw new Error("Insufficient balance");
-
+        //FIXME Encapsular los datos del nuevo movimiento en un objeto de la clase Movement.
         const movementData = {
             amount: operation === "Payment" ? -amountInput : amountInput,
             balance: totalBalance,
@@ -186,8 +198,11 @@ async function movementCreator(event) {
         alert("Error: " + err.message);
     }
 }
-
-// --- Deshacer último movimiento ---
+/**
+ * --- Deshacer último movimiento ---
+ * @return {undefined}
+ * @fixme Después de borrar el último movimiento se debe hacer una petición UPDATE al RESTful account para actualizar el saldo de la cuenta de acuerdo al borrado del último movimiento.
+ * */
 async function undoLastMovement() {
     try {
         const response = await fetch(`${url}/account/${activeAccountId}`, {
