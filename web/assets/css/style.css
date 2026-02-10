@@ -800,7 +800,7 @@ input:focus {
     flex-direction: column; 
     justify-content: center; 
     align-items: center;
-    
+
 }
 #h5p-container h1{
     color: whitesmoke;
@@ -809,9 +809,32 @@ input:focus {
 
 #h5p-container video{
     margin-bottom: 5vh;
-    
+
 }
-/* For small screens */
+
+#movementModal,
+#undoModal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0,0,0,0.5);
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+#undoModal form button[type="submit"] {
+    background: #e74c3c;
+    color: #fff;
+}
+
+#movementModal form .submit-btn,
+#undoModal form .submit-btn {
+    margin: 15px;
+}
 /* ===== MOVEMENTS MOBILE  ===== */
 
 @media (max-width: 768px) {
@@ -842,6 +865,7 @@ input:focus {
 
     }
 }
+
 
 
 

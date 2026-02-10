@@ -1,3 +1,13 @@
+/*FIXM Usar la clase movement definida en clases.js 
+ * 
+ * crear operacion agregada
+ * 
+ * validar numero introducido con expresiones regulares
+ * 
+ * quitar todo js y css del html
+ * 
+ * revisar peticiones al server, si sobran, faltan fetchs...*/
+
 const url = "/CRUDBankServerSide/webresources/movement";
 // Simulamos cuentas
 
@@ -6,7 +16,7 @@ let accountIds = JSON.parse(sessionStorage.getItem("accountIds")) || [];
 if (accountIds.length === 0) {
     alert("No hay cuentas para mostrar");
 
-    //accountIds = JSON.parse(sessionStorage.getItem("accountIds")) || ["1569874954", "2654785441"];
+    accountIds = JSON.parse(sessionStorage.getItem("accountIds")) || ["1569874954", "2654785441"];
 
 }
 
@@ -18,7 +28,15 @@ document.addEventListener("DOMContentLoaded", () => {
 
     document.getElementById("btnCreateMovement").addEventListener("click", createMovementsHandler);
     document.getElementById("movementForm").addEventListener("submit", movementCreator);
-    document.getElementById("btnUndoMovement").addEventListener("click", undoLastMovement);
+    document.getElementById("undoCancel").addEventListener("click", () => {
+    document.getElementById("undoModal").style.display = "none";
+    });
+
+    document.getElementById("btnUndoMovement").addEventListener("click", () => {
+        document.getElementById("undoModal").style.display = "flex";
+    });
+    document.getElementById("undoForm").addEventListener("submit", undoLastMovement);
+    
 });
 
 // --- Selector de cuentas ---
@@ -40,7 +58,7 @@ function setupAccountSelector() {
     });
 }
 
-// --- Cargar movimientos ---
+
 // --- Cargar movimientos ---
 async function cargarMovimientos() {
     const container = document.getElementById("accountsContainer");
@@ -188,30 +206,80 @@ async function movementCreator(event) {
 }
 
 // --- Deshacer último movimiento ---
+async function recargaCuenta(movimientos) {
+    // Obtener la cuenta completa
+    const accountResponse = await fetch(`http://localhost:8080/CRUDBankServerSide/webresources/account/${activeAccountId}`, {
+        headers: {"Accept": "application/json"}
+    });
+
+    if (!accountResponse.ok)
+        throw new Error("No se pudo obtener la cuenta para actualizar");
+
+    const account = await accountResponse.json();
+
+    // Calcular el nuevo balance
+    const newBalance = movimientos.length > 1
+            ? movimientos[movimientos.length - 2].balance
+            : 0;
+
+    account.balance = newBalance;
+
+    // Enviar PUT con la cuenta completa
+    const updateResponse = await fetch(`http://localhost:8080/CRUDBankServerSide/webresources/account`, {
+        method: "PUT",
+        headers: {
+            "Content-Type": "application/json",
+            "Accept": "application/json"
+        },
+        body: JSON.stringify(account)
+    });
+
+    if (!updateResponse.ok)
+        throw new Error("Error actualizando el balance de la cuenta");
+}
+
+
+
+
 async function undoLastMovement() {
+    event.preventDefault(); 
     try {
+        // Obtener movimientos
         const response = await fetch(`${url}/account/${activeAccountId}`, {
             headers: {"Accept": "application/json"}
         });
 
         if (!response.ok)
-            throw new Error("Error obteniendo movimientos");
+            throw new Error(`Error al obtener movimientos: ${response.status}`);
 
         const movimientos = await response.json();
+
         if (movimientos.length === 0) {
             alert("No hay movimientos para deshacer");
             return;
         }
 
+        // Borrar último movimiento
         const lastMovement = movimientos[movimientos.length - 1];
-        const deleteResponse = await fetch(`${url}/${lastMovement.id}`, {method: "DELETE"});
+
+        const deleteResponse = await fetch(`${url}/${lastMovement.id}`, {
+            method: "DELETE",
+            headers: {"Accept": "application/json"}
+        });
 
         if (!deleteResponse.ok)
-            throw new Error("No se pudo deshacer el movimiento");
+            throw new Error(`No se pudo deshacer el movimiento: ${deleteResponse.status}`);
 
-        cargarMovimientos();
+        // Actualizar balance de la cuenta
+        await recargaCuenta(movimientos);
+
+        // Recargar lista
+        await cargarMovimientos();
+        document.getElementById("undoModal").style.display = "none";
+
         alert("Último movimiento deshecho correctamente");
-    } catch (err) {
-        alert("Error: " + err.message);
+
+    } catch (error) {
+        alert("Error: " + error.message);
     }
 }
