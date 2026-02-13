@@ -6,7 +6,11 @@
  * 
  * quitar todo js y css del html
  * 
- * revisar peticiones al server, si sobran, faltan fetchs...*/
+ * revisar peticiones al server, si sobran, faltan fetchs...
+ * 
+ * quitar linea que da cuentas default
+ * 
+ * formatear importes*/
 
 const url = "/CRUDBankServerSide/webresources/movement";
 // Simulamos cuentas
