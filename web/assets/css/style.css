@@ -842,7 +842,293 @@ input:focus {
 
     }
 }
+/* ============================================
+   CUSTOMERS TABLE - RESPONSIVE DESIGN
+   Sin scroll horizontal - Convierte tabla en cards en móvil
+   ============================================ */
 
+/* ===== DESKTOP: Tabla normal ===== */
+@media screen and (min-width: 769px) {
+    .table-responsive {
+        width: 100%;
+        overflow-x: visible;
+    }
+    
+    #customerTable {
+        width: 100%;
+        border-collapse: collapse;
+        table-layout: auto;
+    }
+    
+    #customerTable th,
+    #customerTable td {
+        padding: 12px 10px;
+        text-align: left;
+        vertical-align: middle;
+        white-space: normal;
+        word-wrap: break-word;
+    }
+    
+    /* Hacer las columnas menos importantes más estrechas */
+    #customerTable th:nth-child(4),  /* Middle Initial */
+    #customerTable td:nth-child(4) {
+        width: 8%;
+        text-align: center;
+    }
+    
+    #customerTable th:nth-child(7),  /* State */
+    #customerTable td:nth-child(7) {
+        width: 8%;
+    }
+    
+    #customerTable th:nth-child(8),  /* Zip */
+    #customerTable td:nth-child(8) {
+        width: 10%;
+    }
+    
+    #customerTable th:last-child,    /* Actions */
+    #customerTable td:last-child {
+        width: 12%;
+        text-align: center;
+        white-space: nowrap;
+    }
+}
+
+/* ===== TABLET: Ocultar columnas menos importantes ===== */
+@media screen and (max-width: 768px) and (min-width: 481px) {
+    .table-responsive {
+        width: 100%;
+        overflow-x: visible;
+    }
+    
+    #customerTable {
+        width: 100%;
+        font-size: 14px;
+    }
+    
+    /* Ocultar Middle Initial, State y Zip en tablet */
+    #customerTable th:nth-child(4),  /* Middle Initial */
+    #customerTable td:nth-child(4),
+    #customerTable th:nth-child(7),  /* State */
+    #customerTable td:nth-child(7),
+    #customerTable th:nth-child(8),  /* Zip */
+    #customerTable td:nth-child(8) {
+        display: none;
+    }
+    
+    #customerTable th,
+    #customerTable td {
+        padding: 10px 8px;
+        font-size: 13px;
+    }
+    
+    /* Ajustar el ancho de los botones de acción */
+    #customerTable .action-btn {
+        padding: 6px 10px;
+        font-size: 12px;
+        margin: 2px;
+    }
+}
+
+/* ===== MÓVIL: Convertir tabla en cards ===== */
+@media screen and (max-width: 480px) {
+    .table-responsive {
+        width: 100%;
+        overflow-x: visible;
+        padding: 0;
+    }
+    
+    /* Ocultar la tabla tradicional */
+    #customerTable thead {
+        display: none;
+    }
+    
+    #customerTable,
+    #customerTable tbody,
+    #customerTable tr,
+    #customerTable td {
+        display: block;
+        width: 100%;
+        box-sizing: border-box;
+    }
+    
+    #customerTable tbody {
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+        width: 100%;
+    }
+    
+    /* Cada fila se convierte en una card */
+    #customerTable tbody tr {
+        background: white;
+        border-radius: 12px;
+        padding: 15px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        border: 1px solid #e3e8f5;
+        position: relative;
+        transition: transform 0.2s, box-shadow 0.2s;
+        width: 100%;
+        box-sizing: border-box;
+    }
+    
+    #customerTable tbody tr:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(26, 95, 180, 0.15);
+    }
+    
+    /* Cada celda se muestra como un bloque con su label */
+    #customerTable td {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        padding: 10px 0;
+        border: none;
+        border-bottom: 1px solid #f0f4f9;
+        text-align: right;
+        position: relative;
+        width: 100%;
+        box-sizing: border-box;
+        word-wrap: break-word;
+        overflow-wrap: break-word;
+    }
+    
+    #customerTable td:last-child {
+        border-bottom: none;
+        justify-content: center;
+        padding: 15px 0 0 0;
+        margin-top: 10px;
+        border-top: 2px solid #e3e8f5;
+        flex-direction: column;
+        align-items: stretch;
+        gap: 10px;
+    }
+    
+    /* Agregar labels antes de cada valor usando data-label */
+    #customerTable td::before {
+        content: attr(data-label);
+        font-weight: 700;
+        color: #1a5fb4;
+        text-align: left;
+        flex-shrink: 0;
+        padding-right: 15px;
+        min-width: 110px;
+    }
+    
+    /* La columna de acciones no necesita label */
+    #customerTable td:last-child::before {
+        content: none;
+    }
+    
+    /* Destacar el ID como encabezado de la card */
+    #customerTable td:first-child {
+        font-size: 18px;
+        font-weight: 700;
+        color: #1a5fb4;
+        border-bottom: 2px solid #1a5fb4;
+        margin-bottom: 5px;
+        padding-bottom: 12px;
+    }
+    
+    #customerTable td:first-child::before {
+        font-size: 14px;
+        font-weight: 700;
+    }
+    
+    /* Ajustar los botones de acción para móvil - VERSIÓN MEJORADA */
+    #customerTable td:last-child {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        width: 100%;
+        padding: 15px 0 0 0;
+    }
+    
+    /* Estilos para TODOS los botones dentro de la celda de acciones */
+    #customerTable td:last-child button,
+    #customerTable .action-btn,
+    #customerTable .submit-btn {
+        width: 100% !important;
+        max-width: 100%;
+        min-width: unset;
+        padding: 12px 20px;
+        font-size: 15px;
+        text-align: center;
+        display: flex !important;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        box-sizing: border-box;
+        white-space: nowrap;
+        margin: 0;
+        flex-shrink: 0;
+    }
+    
+    /* Iconos dentro de los botones */
+    #customerTable td:last-child button i {
+        font-size: 14px;
+        flex-shrink: 0;
+    }
+    
+    /* Email puede ser largo - permitir wrap */
+    #customerTable td[data-label="Email"] {
+        word-break: break-word;
+        overflow-wrap: anywhere;
+    }
+    
+    /* Indicador visual del ID */
+    #customerTable td:first-child {
+        background: linear-gradient(90deg, rgba(26,95,180,0.08), transparent);
+        margin: -15px -15px 10px -15px;
+        padding: 15px;
+        border-radius: 12px 12px 0 0;
+    }
+}
+
+/* ===== AJUSTES ADICIONALES PARA FORMULARIOS EN MÓVIL ===== */
+@media screen and (max-width: 480px) {
+    .customers-page .modal-content {
+        width: 95%;
+        padding: 20px 15px;
+        max-height: 90vh;
+        overflow-y: auto;
+    }
+    
+    .customers-page #customerForm .form-group {
+        margin-bottom: 15px;
+    }
+    
+    .customers-page #customerForm input {
+        font-size: 16px; /* Evita zoom en iOS */
+    }
+    
+    .actions-row {
+        flex-direction: column;
+        gap: 10px;
+    }
+    
+    .actions-row .submit-btn {
+        width: 100%;
+    }
+}
+
+/* ===== MEJORAS DE ACCESIBILIDAD ===== */
+@media (prefers-reduced-motion: reduce) {
+    #customerTable tbody tr {
+        transition: none;
+    }
+}
+
+/* Mejor contraste en modo de alto contraste */
+@media (prefers-contrast: high) {
+    #customerTable tbody tr {
+        border: 2px solid #1a5fb4;
+    }
+    
+    #customerTable td::before {
+        font-weight: 900;
+    }
+}
 
 
 
