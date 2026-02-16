@@ -842,7 +842,87 @@ input:focus {
 
     }
 }
+/* ===== RESPONSIVE TABLE → CARDS (customers) ===== */
+@media (max-width: 768px) {
 
+    .customers-page .table-responsive .Table thead {
+        display: none !important;
+    }
 
+    .customers-page .table-responsive .Table {
+        display: block !important;
+        table-layout: auto !important;
+        box-shadow: none !important;
+        border: none !important;
+        overflow: visible !important;
+    }
 
+    .customers-page .table-responsive .Table tbody {
+        display: block !important;
+    }
 
+    .customers-page .table-responsive .Table tbody tr {
+        display: block !important;
+        margin-bottom: 15px !important;
+        border: 1px solid #c5d9ff !important;
+        border-radius: 12px !important;
+        padding: 12px 15px !important;
+        background: rgba(255, 255, 255, 0.95) !important;
+        box-shadow: 0 4px 12px rgba(28, 113, 216, 0.1) !important;
+        height: auto !important;
+    }
+
+    .customers-page .table-responsive .Table tbody td,
+    .customers-page .table-responsive .Table tbody th[scope="row"] {
+        display: flex !important;
+        justify-content: space-between !important;
+        align-items: center !important;
+        padding: 8px 5px !important;
+        border: none !important;
+        border-bottom: 1px solid #eef2fa !important;
+        text-align: right !important;
+        white-space: normal !important;
+        word-break: break-word !important;
+        font-weight: normal !important;
+        background: transparent !important;
+        color: #333 !important;
+        width: 100% !important;
+        height: auto !important;
+    }
+
+    .customers-page .table-responsive .Table tbody tr td:last-child {
+        border-bottom: none !important;
+    }
+
+    .customers-page .table-responsive .Table tbody td::before,
+    .customers-page .table-responsive .Table tbody th[scope="row"]::before {
+        content: attr(data-label) !important;
+        display: inline-block !important;
+        font-weight: 700 !important;
+        color: #1a5fb4 !important;
+        text-align: left !important;
+        flex-shrink: 0 !important;
+        margin-right: 15px !important;
+        min-width: 120px !important;
+        font-size: 14px !important;
+    }
+
+    .customers-page .table-responsive .Table tbody td:last-child {
+        justify-content: center !important;
+        flex-wrap: wrap !important;
+        gap: 8px !important;
+    }
+
+    .customers-page .table-responsive .Table tbody td:last-child::before {
+        content: none !important;
+        display: none !important;
+    }
+
+    .customers-page .table-responsive .Table tbody td:last-child .submit-btn {
+        flex: 1;
+        min-width: 80px;
+        margin: 0 !important;
+        padding: 8px 12px !important;
+        font-size: 14px !important;
+    }
+}
