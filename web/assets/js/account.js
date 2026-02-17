@@ -3,8 +3,19 @@
  CONSTANTS
  =========
 */
+/*A*/
+/*B*/
 const BASE_URL = "/CRUDBankServerSide/webresources/account";
 let deleteMode = false;
+
+let responseMsgAccount = document.getElementById("responseMsgCreate");
+
+
+function mostrarError(mensaje){
+    responseMsgAccount.textContent = mensaje;
+    responseMsgAccount.classList.add("error");
+    responseMsgAccount.style.display = "block";
+}
 
 /**
 * @todo Formatear importes (balance, beginBalance y creditLine con separadores de miles y de decimales(máximo 2).
@@ -50,12 +61,17 @@ function* accountRowGenerator(accounts){
                     year: 'numeric',
                     month: '2-digit',
                     day: '2-digit',
-                    hour: '2-digit',
-                    minute: '2-digit',
-                    second: '2-digit',
+                    
                     hour12: false
                 }).format(date);
-            } else {
+            } else if (field === "balance" || field === "creditLine" || field === "beginBalance"){
+                td.textContent = new Intl.NumberFormat ('es-ES',{
+                    style: 'currency',
+                    currency: 'EUR',
+                    minimunFractionDigits: 2
+                }).format(acc[field]);
+                
+            }else {
                 td.textContent = acc[field];
             }
             tr.appendChild(td);
@@ -265,8 +281,9 @@ async function createAccount(event) {
     }
 
     const description = document.getElementById("description").value.trim();
+    const beginBalanceInput = document.getElementById("beginBalance").value.trim();
     const typeValue = document.getElementById("type").value;
-    const creditLineInput = document.getElementById("creditLine").value;
+    const creditLineInput = document.getElementById("creditLine").value.trim();
 
     if (!description) {
         alert("Description is required");
@@ -284,9 +301,34 @@ async function createAccount(event) {
            )
           (?:,\d{1,2})?                      # optional decimal with 1 or 2 digits
          */
-
+    /*
     const beginBalance = 100;
-    const balance = 100;
+    const balance = 100;*/
+    if (beginBalanceInput === "" || !esAmountRegex.test(beginBalanceInput)) {
+        let mensaje = "";
+
+        if (beginBalanceInput === "")
+            mensaje = "You must enter an initial balance (Ej: 5.000,00).";
+        else
+            mensaje = "Balance must be a number with up to 2 decimals (Ej: 5.000,00).";
+
+        mostrarError(mensaje);
+        return;
+    }
+
+    let normalized = beginBalanceInput
+        .replace(/\./g, "")   
+        .replace(",", ".");   
+
+    const beginBalance = parseFloat(normalized);
+
+    if (beginBalance < 0) {
+        mostrarError("Initial balance cannot be negative.");
+        return;
+    }
+
+    const balance = beginBalance;
+    
     const beginBalanceTimestamp = new Date().toISOString();
 
     let type;
@@ -297,13 +339,34 @@ async function createAccount(event) {
         creditLine = 0;
     } else {
         type = "CREDIT";
-        creditLine = Number(creditLineInput);
 
-        if (creditLine < 0 || creditLine > 10000) {
-            alert("Credit line must be between 0 and 10000");
+        if (creditLineInput === "" || !esAmountRegex.test(creditLineInput)) {
+            let mensaje = "";
+
+            if (creditLineInput === "")
+                mensaje = "Credit Line must have an initial value (Ej: 5.000,00).";
+            else
+                mensaje = "Credit Line must comply with the format (Ej: 5.000,00); it does not accept letters or negative numbers.";
+
+            mostrarError(mensaje);
             return;
         }
-    }
+        
+        normalized = creditLineInput
+            .replace(/\./g, "")   
+            .replace(",", ".");
+    
+        creditLine = parseFloat(normalized);
+
+        if (creditLine < 0 || creditLine > 10000){
+            if (creditLine < 0)           
+                mostrarError("Initial Credit Line cannot be negative.");
+            
+            else
+                mostrarError("The initial credit line cannot exceed the value of 10000.");
+            return;
+        }
+    }    
 
     const xml = `
     <account>
@@ -511,9 +574,10 @@ async function updateAccount(event){
 
     const newDescription = document.getElementById("updateDescription").value.trim();
     let newCreditLine = accountToUpdate.creditLine;
+    responseMsgAccount = document.getElementById("responseMsgUpdate");
 
     if(accountToUpdate.type === "CREDIT"){
-        newCreditLine = document.getElementById("updateCreditLine").value;
+        newCreditLine = document.getElementById("updateCreditLine").value.trim();
     }
     //TODO Utilizar la siguiente RegExp para validar que creditLine pueda introducirse con separador de decimales y de miles.
     const esAmountRegex = /^(?:\d{1,15}|\d{1,3}(?:\.\d{3}){1,4})(?:,\d{1,2})?$/;
@@ -524,6 +588,34 @@ async function updateAccount(event){
            )
           (?:,\d{1,2})?                      # optional decimal with 1 or 2 digits
          */
+
+        if (newCreditLine === "" || !esAmountRegex.test(newCreditLine)) {
+            let mensaje = "";
+
+            if (newCreditLine === "")
+                mensaje = "Credit Line must have an initial value (Ej: 5.000,00).";
+            else
+                mensaje = "Credit Line must comply with the format (Ej: 5.000,00); it does not accept letters or negative numbers.";
+
+            mostrarError(mensaje);
+            return;
+        }
+        
+        let normalized = newCreditLine
+            .replace(/\./g, "")   
+            .replace(",", ".");
+    
+        newCreditLine = parseFloat(normalized);
+
+        if (newCreditLine < 0 || newCreditLine > 10000){
+            if (newCreditLine < 0)           
+                mostrarError("Initial Credit Line cannot be negative.");
+            
+            else
+                mostrarError("The initial credit line cannot exceed the value of 10000.");
+            return;
+        }
+
 
     const xml = `
     <account>
@@ -650,6 +742,9 @@ function toggleTutorial() {
         h5pInstance = new H5PStandalone.H5P(container, options);
     }
 }
+
+
+
 
 /* 
  =======

@@ -922,6 +922,58 @@ input:focus {
     .button-group {
         flex-direction: column;
         align-items: center;
+}
+
+  /*estilos del html */
+
+.confirm-actions {
+    margin-top: 12px;
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+}
+
+#customersMsg {
+    display: none;
+    margin-top: 12px;
+}
+
+#formMsg {
+    display: none;
+    margin-bottom: 12px;
+}
+
+.form-actions {
+    margin-top: 10px;
+    display: flex;
+    gap: 10px;
+}
+
+#helpVideoModal .modal-content {
+    max-width: 900px;
+    width: 95%;
+
+.ocultar {    
+    display:none;
+}
+
+.margen{
+    margin-top:30px;
+
+}
+
+
+.help-modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+/* ===== RESPONSIVE TABLE → CARDS (customers) ===== */
+@media (max-width: 768px) {
+
+    .customers-page .table-responsive .Table thead {
+        display: none !important;
+
     }
 
     .button-group button {
