@@ -8,6 +8,8 @@ document.addEventListener('DOMContentLoaded', () => {
     // URL del servicio REST (lo llamo desde el cliente hacia el servidor Java)
     // La defino aquí para usarla en todas las llamadas fetch.
     const apiUrl = '/CRUDBankServerSide/webresources/customer';
+    //parte del FIXME resuelto: declaro la URL de cuentas por customer que se necesita para que se detecten las cuentats y no se puedan borrar
+    const accountByCustomerUrl = '/CRUDBankServerSide/webresources/account/customer';
 
     // Referencias DOM que voy a reutilizar
     // Obtengo las referencias de los elementos una sola vez para
@@ -339,6 +341,41 @@ document.addEventListener('DOMContentLoaded', () => {
         if (createBtn) createBtn.focus();
     }
 
+    // FIXME resuelto: función generadora 
+    // y renderTable generada con ambos botones de accion a su lado
+    function* rowGenerator(list) {
+        const columns = ['id','firstName','lastName','middleInitial','street','city','state','zip','phone','email'];
+        for (const c of list) {
+            const tr = document.createElement('tr');
+
+            for (const col of columns) {
+                const td = document.createElement('td');
+                td.textContent = c[col] != null ? String(c[col]) : '';
+                td.title = td.textContent;
+                tr.appendChild(td);
+            }
+
+            const actions = document.createElement('td');
+
+            const editBtn = document.createElement('button');
+            editBtn.type = 'button'; editBtn.className = 'submit-btn'; editBtn.textContent = 'Edit';
+            editBtn.setAttribute('aria-label', `Edit customer ${c.firstName} ${c.lastName}`);
+            editBtn.addEventListener('click', () => { customersEdit(c.id); });
+
+            const delBtn = document.createElement('button');
+            delBtn.type = 'button'; delBtn.className = 'submit-btn'; delBtn.textContent = 'Delete';
+            delBtn.setAttribute('aria-label', `Delete customer ${c.firstName} ${c.lastName}`);
+            delBtn.addEventListener('click', () => { customersDelete(c.id); });
+
+            actions.appendChild(editBtn);
+            actions.appendChild(document.createTextNode(' '));
+            actions.appendChild(delBtn);
+            tr.appendChild(actions);
+
+            yield tr;
+        }
+    }
+
     // Pinto la tabla de customers que devuelve el servidor.
     // Construyo las filas dinámicamente y enlazo los botones Edit/Delete.
     function renderTable(list) {
@@ -347,33 +384,9 @@ document.addEventListener('DOMContentLoaded', () => {
             showMsg('error', 'No customers to display.');
             return;
         }
-
         // guardo localmente la lista para usarla al editar (evito otra llamada)
         lastCustomers = list;
-        //FIXME Sustituir esta iteración por el uso de una función generadora
-        for (const c of list) {
-            const tr = document.createElement('tr');
-            const columns = ['id','firstName','lastName','middleInitial','street','city','state','zip','phone','email'];
-            for (const col of columns) {
-                const td = document.createElement('td');
-                td.textContent = c[col] != null ? String(c[col]) : '';
-                td.title = td.textContent;
-                tr.appendChild(td);
-            }
-            const actions = document.createElement('td');
-            const editBtn = document.createElement('button');
-            editBtn.type = 'button'; editBtn.className = 'submit-btn'; editBtn.textContent = 'Edit';
-            editBtn.setAttribute('aria-label', `Edit customer ${c.firstName} ${c.lastName}`);
-            // al pulsar editar llamo a la función global que abre el formulario
-            editBtn.addEventListener('click', () => { customersEdit(c.id); });
-            const delBtn = document.createElement('button');
-            delBtn.type = 'button'; delBtn.className = 'submit-btn'; delBtn.textContent = 'Delete';
-            delBtn.setAttribute('aria-label', `Delete customer ${c.firstName} ${c.lastName}`);
-            delBtn.addEventListener('click', () => { customersDelete(c.id); });
-            actions.appendChild(editBtn);
-            actions.appendChild(document.createTextNode(' '));
-            actions.appendChild(delBtn);
-            tr.appendChild(actions);
+        for (const tr of rowGenerator(list)) {
             tbody.appendChild(tr);
         }
     }
@@ -463,7 +476,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 // creación -> POST
                 const res = await fetch(apiUrl, { method: 'POST', headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' }, credentials: 'same-origin', body: JSON.stringify(customer) });
                 if (!res.ok) { const t = await res.text(); throw new Error(t || 'Error al crear'); }
-                // Muestro mensaje en inglés dentro del formulario durante 2s y luego cierro
+                // Muestro mensaje  dentro del formulario durante 2s y luego cierro
                 await showFormMessage('success', 'Customer created successfully.');
             }
             // After showing the message, showFormMessage already hides the modal.
@@ -477,8 +490,9 @@ document.addEventListener('DOMContentLoaded', () => {
     // Borrar un customer por id (DELETE)
     // Muestro un modal de confirmación antes de llamar al servidor.
     /**
-    * @fixme Controlar que no se puedan borrar los Customer que tengan cuentas e informar al usuario de tal situación.
-    * Para lo anterior tendrá que hacer una petición GET /CRUDBankServerSide/webresources/account/customer/{id}. 
+    * @fixme resuelto: se consulta GET /account/customer/{id} antes de borrar.
+    * Si tiene cuentas asociadas se informa al admin y el borrado no se hace.
+    *Sale un mensaje de que no puedes borrar customers con cuentas asociadass
     */
     async function customersDelete(id) {
         try {
@@ -487,10 +501,29 @@ document.addEventListener('DOMContentLoaded', () => {
             if (toDelete && toDelete.email) {
                 const domain = String(toDelete.email).split('@')[1] || '';
                 if (domain.toLowerCase().startsWith('admin')) {
-                    showMsg('error', 'No se pueden eliminar administradores');
+                    showMsg('error', 'Can´t delete admins'); //lo cambie a ingles para que vaya con la web
                     return;
                 }
             }
+
+            // Compruebo si el customer tiene cuentas bancarias asociadas
+            const accountsRes = await fetch(accountByCustomerUrl + '/' + encodeURIComponent(id), {
+                method: 'GET',
+                headers: { 'Accept': 'application/json' },
+                credentials: 'same-origin'
+            });
+            if (accountsRes.ok) {
+                const accounts = await accountsRes.json();
+                if (Array.isArray(accounts) && accounts.length > 0) {
+                    showMsg('error',
+                        'This customer has ' + accounts.length + ' account(s) associated. ' +
+                        'You can´t delete customers with accounts.'
+                    );
+                    return;
+                }
+            }
+         
+
             const ok = await showConfirm('Do you want to delete this customer?');
             if (!ok) return;
             const res = await fetch(apiUrl + '/' + encodeURIComponent(id), { method: 'DELETE', credentials: 'same-origin' });
@@ -650,6 +683,5 @@ document.addEventListener('DOMContentLoaded', () => {
     document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && helpVideoModal && !helpVideoModal.classList.contains('hidden')) closeHelp(); });
 
     // Inicio: cargo la lista de customers al cargar la página
-    
     fetchCustomers();
 });

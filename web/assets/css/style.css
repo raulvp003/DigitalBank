@@ -803,7 +803,7 @@ input:focus {
     
 }
 #h5p-container h1{
-    color: whitesmoke;
+    color: black;
 }
 
 
@@ -841,8 +841,57 @@ input:focus {
         flex: 0 1 5vh;      /* ancho flexible: mínimo 0, máximo 200px */
 
     }
+
 }
 
 
+  /*estilos del html */
+
+.confirm-actions {
+    margin-top: 12px;
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+}
+
+#customersMsg {
+    display: none;
+    margin-top: 12px;
+}
+
+#formMsg {
+    display: none;
+    margin-bottom: 12px;
+}
+
+.form-actions {
+    margin-top: 10px;
+    display: flex;
+    gap: 10px;
+}
+
+#helpVideoModal .modal-content {
+    max-width: 900px;
+    width: 95%;
+}
 
 
+.help-modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.help-modal-body {
+    margin-top: 12px;
+}
+
+
+#helpVideoModal #h5p-container {
+    width: 100%;
+}
+
+
+#h5p-container video {
+    margin-top: 10px;
+}
