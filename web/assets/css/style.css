@@ -843,6 +843,12 @@ input:focus {
     }
 }
 
+.ocultar {    
+    display:none;
+}
 
+.margen{
+    margin-top:30px;
+}
 
 

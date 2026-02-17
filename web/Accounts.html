@@ -49,7 +49,7 @@
         </div>
 
         <div class="accounts-toolbar">
-            <button type="button" class="submit-btn" onclick="showCreateAccountForm()" aria-label="Create new account">
+            <button type="button" class="submit-btn"  onclick="showCreateAccountForm()" aria-label="Create new account">
                 <i class="fas fa-plus" aria-hidden="true"></i> Create account
             </button>
 
@@ -57,7 +57,7 @@
                 <i class="fas fa-trash" aria-hidden="true"></i> Delete accounts
             </button>
 
-            <button type="button" class="submit-btn" id="confirmDeleteBtn" onclick="confirmDelete()" style="display:none;"
+            <button type="button" class="submit-btn ocultar" id="confirmDeleteBtn" onclick="confirmDelete()"
                     aria-label="Confirm delete selected accounts">
                 <i class="fas fa-check" aria-hidden="true"></i> Confirm delete
             </button>
@@ -73,6 +73,11 @@
                         <label for="description">Description</label>
                         <input type="text" id="description" name="description" required>
                     </div>
+                    
+                    <div class="form-group">
+                        <label for="beginBalance">Begin Balance</label>
+                        <input type="text" id="beginBalance" name="beginBalance">
+                    </div>
 
                     <div class="form-group">
                         <label for="type">Account Type</label>
@@ -82,11 +87,13 @@
                         </select>
                     </div>
 
-                    <div class="form-group" id="creditLineContainer" style="display:none;">
+                    <div class="form-group ocultar" id="creditLineContainer">
                         <label for="creditLine">Credit Line</label>
-                        <input type="number" id="creditLine" name="creditLine" min="0" max="10000">
+                        <input type="text" id="creditLine" name="creditLine">
                     </div>
 
+                    <div id="responseMsgCreate" class="alert-message ocultar"></div>    
+                    
                     <button type="submit" class="submit-btn" aria-label="Create account">Create</button>
                     <button type="button" class="submit-btn" onclick="hideCreateAccountForm()" aria-label="Cancel account creation">Cancel</button>
                 </form>
@@ -104,11 +111,13 @@
                         <input type="text" id="updateDescription" name="updateDescription" required>
                     </div>
 
-                    <div class="form-group" id="updateCreditLineContainer" style="display:none;">
+                    <div class="form-group ocultar" id="updateCreditLineContainer">
                         <label for="updateCreditLine">Credit Line</label>
-                        <input type="number" id="updateCreditLine" name="updateCreditLine" min="0" max="10000">
+                        <input type="text" id="updateCreditLine" name="updateCreditLine">
                     </div>
-
+                    
+                    <div id="responseMsgUpdate" class="alert-message ocultar"></div> 
+                    
                     <button type="submit" class="submit-btn" aria-label="Update account">Update</button>
                     <button type="button" class="submit-btn" onclick="hideUpdateForm()" aria-label="Cancel account update">Cancel</button>
                 </form>
@@ -135,16 +144,16 @@
             </table>
         </div>
         
-        <div style="margin-top:30px;">
+        <div class="margen">
             <button type="button" class="submit-btn" onclick="toggleTutorial()" aria-label="Button to show video">
                 <i class="fas fa-circle-play" aria-hidden="true"></i> Tutorial
             </button>
         </div>
 
-        <div id="tutorialBox" style="display:none; margin-top:20px;">
-            <div id="h5p-container" style=" ">
+        <div id="tutorialBox" class="ocultar">
+            <div id="h5p-container">
             <h1>Help Video</h1>
-            <video width="640" height="360" controls style="margin-top: 10px;">
+            <video width="640" height="360" controls >
                 <source src="/DigitalBank/assets/Videos/account.mp4" type="video/mp4">
                 Tu navegador no soporta el elemento de video.
             </video>
