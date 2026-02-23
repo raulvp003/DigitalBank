@@ -13,6 +13,10 @@
         <!-- Main Stylesheet -->
         <link rel="stylesheet" href="assets/css/style.css" title="Normal">
         <link rel="alternate stylesheet" href="assets/css/dark-mode.css" title="Dark mode" id="dark-mode-css">
+        <!--TODO Mover todos los estilos en línea a un CSS externo-->
+
+        <!-- Estilos extraídos de atributos style="" y puesvtos en style.css, he cambiado angero las letras de help video para que se vea bien -->
+        <link rel="stylesheet" href="assets/css/inline-styles.css">
     </head>
     <body class="customers-page">
 
@@ -62,7 +66,7 @@
         <div class="modal-content form-card" role="document">
           <h3 id="confirmTitle">Confirmation</h3>
           <p id="confirmMessage">Do you want to delete this customer?</p>
-          <div style="margin-top:12px; display:flex; gap:10px; justify-content:center;" role="group" aria-label="Confirmation actions">
+          <div class="confirm-actions" role="group" aria-label="Confirmation actions">
             <button type="button" class="submit-btn" id="confirmYesBtn" aria-label="Confirm delete customer">Yes</button>
             <button type="button" class="submit-btn" id="confirmNoBtn" aria-label="Cancel delete customer">No</button>
           </div>
@@ -71,13 +75,13 @@
       
       <!-- Help video modal (H5P interactivo) -->
       <div id="helpVideoModal" class="modal mt-30 hidden" aria-hidden="true" role="dialog" aria-labelledby="helpTitle">
-        <div class="modal-content form-card" role="document" style="max-width:900px; width:95%;">
-          <div style="display:flex; justify-content:space-between; align-items:center;">
+        <div class="modal-content form-card" role="document">
+          <div class="help-modal-header">
             <h3 id="helpTitle">Help — Interactive Video</h3>
             <button type="button" class="submit-btn" id="helpCloseBtn" aria-label="Close help video">Close</button>
           </div>
-          <div style="margin-top:12px;">
-            <div id="h5p-container" style="width:100%;" aria-label="Interactive help content"></div>
+          <div class="help-modal-body">
+            <div id="h5p-container" aria-label="Interactive help content"></div>
           </div>
         </div>
       </div>
@@ -120,14 +124,14 @@
                     </table>
                 </div>
 
-                <div id="customersMsg" class="alert-message" style="display:none; margin-top:12px" role="alert" aria-live="polite"></div>
+                <div id="customersMsg" class="alert-message" role="alert" aria-live="polite"></div>
 
                 <div id="formContainer" class="modal mt-30 hidden" aria-hidden="true" role="dialog" aria-labelledby="formTitle">
                     <div class="modal-content form-card" role="document">
                         <h2 id="formTitle">Create Customer</h2>
                         <form id="customerForm" aria-label="Customer form">
                             <input type="hidden" id="id">
-                            <div id="formMsg" class="alert-message" style="display:none; margin-bottom:12px" role="alert" aria-live="polite"></div>
+                            <div id="formMsg" class="alert-message" role="alert" aria-live="polite"></div>
                             <div class="form-group">
                                 <label for="firstName" class="sr-only">First Name</label>
                                 <input type="text" id="firstName" placeholder="First Name" required aria-required="true" aria-describedby="firstNameError">
@@ -174,7 +178,7 @@
                                 <div id="emailError" class="error-message" role="alert" aria-live="assertive">
                                     <i class="fas fa-exclamation-circle" aria-hidden="true"></i><span></span></div>
                             </div>
-                            <div style="margin-top:10px; display:flex; gap:10px;" role="group" aria-label="Form actions">
+                            <div class="form-actions" role="group" aria-label="Form actions">
                                 <button type="submit" class="submit-btn" aria-label="Save customer">Save</button>
                                 <button type="button" class="submit-btn" id="cancelCustomerBtn" aria-label="Cancel and close form">Cancel</button>
                             </div>
@@ -188,16 +192,16 @@
                     <div class="modal-content form-card" role="document">
                         <h3 id="confirmTitle">Confirmation</h3>
                         <p id="confirmMessage">Do you want to delete this customer?</p>
-                        <div style="margin-top:12px; display:flex; gap:10px; justify-content:center;" role="group" aria-label="Confirmation actions">
+                        <div class="confirm-actions" role="group" aria-label="Confirmation actions">
                             <button type="button" class="submit-btn" id="confirmYesBtn" aria-label="Confirm delete customer">Yes</button>
                             <button type="button" class="submit-btn" id="confirmNoBtn" aria-label="Cancel delete customer">No</button>
                         </div>
                     </div>
                 </div>
 
-                <div id="h5p-container" style=" ">
+                <div id="h5p-container">
             <h1>Help Video</h1>
-            <video width="640" height="360" controls style="margin-top: 10px;">
+            <video width="640" height="360" controls>
                 <source src="/DigitalBank/assets/Videos/customers.mp4" type="video/mp4">
                 Tu navegador no soporta el elemento de video.
             </video>
