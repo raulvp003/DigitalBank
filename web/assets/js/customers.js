@@ -353,10 +353,42 @@ document.addEventListener('DOMContentLoaded', () => {
                 td.textContent = c[col] != null ? String(c[col]) : '';
                 td.title = td.textContent;
                 tr.appendChild(td);
+     function renderTable(list) {
+        tbody.innerHTML = '';
+        if (!Array.isArray(list) || list.length === 0) {
+            showMsg('error', 'No customers to display.');
+            return;
+        }
+
+        lastCustomers = list;
+
+        const columnLabels = {
+            firstName: 'First Name',
+            lastName: 'Last Name',
+            middleInitial: 'Middle Initial',
+            street: 'Street',
+            city: 'City',
+            state: 'State',
+            zip: 'Zip',
+            phone: 'Phone',
+            email: 'Email'
+        };
+
+        for (const c of list) {
+            const tr = document.createElement('tr');
+            const columns = ['firstName','lastName','middleInitial','street','city','state','zip','phone','email'];
+            for (let i = 0; i < columns.length; i++) {
+                const col = columns[i];
+                const cell = document.createElement('td');
+                cell.textContent = c[col] != null ? String(c[col]) : '';
+                cell.title = cell.textContent;
+                cell.setAttribute('data-label', columnLabels[col]);
+                tr.appendChild(cell);
             }
 
             const actions = document.createElement('td');
 
+            actions.setAttribute('data-label', 'Actions');
             const editBtn = document.createElement('button');
             editBtn.type = 'button'; editBtn.className = 'submit-btn'; editBtn.textContent = 'Edit';
             editBtn.setAttribute('aria-label', `Edit customer ${c.firstName} ${c.lastName}`);
@@ -390,7 +422,6 @@ document.addEventListener('DOMContentLoaded', () => {
             tbody.appendChild(tr);
         }
     }
-
     // Recupero todos los customers del servicio REST (GET)
     // Manejo errores mostrando un mensaje en la UI si algo falla.
     async function fetchCustomers() {
