@@ -617,6 +617,7 @@ input.error:focus {
 
 /* ===== MOVEMENTS CSS ===== */
 
+/* ===== MOVEMENT LIST TABLE ===== */
 #movementsList {
     padding: 0;
     margin: 20px auto;
@@ -632,70 +633,82 @@ input.error:focus {
     background-color: #f7d4d4;
 }
 
-/* Contenedor principal de movimientos */
+/* ===== MAIN CONTAINERS ===== */
+
+/* Main container for movements page */
 .container-form.table-page {
     max-width: 1200px;
-    width: 90%;         /* ocupa casi todo el ancho del contenedor */
-    margin: 8% auto 3%;}
+    width: 90%;
+    margin: 8% auto 3%;
+}
 
-/* Form Card específico para movimientos */
+/* Form card specific to movements */
 #mvFormCard {
-    max-width: 100%;    /* ocupa todo el contenedor */
-    width: 90%;         /* 90% del viewport */
-    margin: 0 auto;     /* centrado horizontal */
+    max-width: 100%;
+    width: 90%;
+    margin: 0 auto;
     box-shadow: 8px 12px 25px rgba(0,0,0,0.2);
     align-items: center; 
 }
 
-/* Contenedor de cada tabla dinámica */
+/* Container for dynamically loaded tables */
 #accountsContainer {
-    width: 100%;            /* ocupa todo el contenedor padre */
+    width: 100%;
     margin: 0 auto 30px auto; 
-    overflow-x: auto;       /* scroll horizontal si la tabla es demasiado ancha */
+    overflow-x: auto;
     box-sizing: border-box;
 }
 
-/* Estilo base para todas las tablas */
+/* ===== TABLE STYLES ===== */
+
+/* Base style for all tables */
 .Table {
-    width: 100%;           /* ocupa el contenedor */
+    width: 100%;
     border-collapse: collapse;
     font-size: 15px;
     border-radius: 12px;
     overflow: hidden;
     box-shadow: 8px 12px 20px rgba(0,0,0,0.15);
-    table-layout: auto;    /* columnas se ajustan al contenido */
+    table-layout: auto;
 }
 
-/* Encabezados y celdas */
+/* Table headers and cells */
 .Table th,
 .Table td {
-    padding: 6px 10px;     /* menos padding para no crear espacio extra */
+    padding: 6px 10px;
     text-align: center;
     vertical-align: middle;
-    white-space: normal;   /* permite saltos de línea */
+    white-space: normal;
 }
 
-/* Columna de acciones (última columna) más estrecha */
+/* Last column (actions) - narrower */
 .Table th:last-child,
 .Table td:last-child {
     width: 8%;
     white-space: nowrap;
 }
 
-/* Filas hover */
+/* Row hover effect */
 .Table tbody tr:hover {
     background-color: rgba(26,95,180,0.05);
 }
 
-/* H2 dentro de cada tabla */
+/* Row height for spacing */
+.Table tbody tr {
+    height: 55px;
+}
+
+/* Account balance headers inside tables */
 #accountsContainer h2 {
     color: #1a5fb4;
-    margin-bottom: 10px;
+    margin-bottom: 15px;
     font-size: 22px;
     text-align: left;
 }
 
-/* Inputs y selects dentro del contenedor */
+/* ===== FORM INPUTS ===== */
+
+/* Input, select, and option elements */
 input, select, option {
     padding: 10px 12px;
     border: 2px solid #c5d9ff;
@@ -705,89 +718,32 @@ input, select, option {
     width: 100%;
 }
 
+/* Input focus state */
 input:focus { 
     outline: none; 
     border-color: #3584e4; 
     box-shadow: 0 0 0 3px rgba(53, 132, 228, 0.2); 
 }
 
-/* Mensaje cuando no hay movimientos */
-#noMovementsMsg {
-    text-align: center;
-    font-size: 25px;
-    color: #555; 
-    display: none;
-}
-.Table tbody tr { height: 55px; /* separación entre filas */ }
+/* ===== ACCOUNT SELECTOR ===== */
 
-/* Contenedor de cada tabla dinámica */
-#accountsContainer {
-    width: 90%;           /* ocupa 90% del viewport */
-    margin: 0 auto 30px auto; /* centrado y espacio inferior */
-    overflow-x: auto;     /* scroll horizontal si la tabla es muy ancha */
-}
-
-.accounts-toolbar {
-    display: flex;
-    gap: 15px;
-    justify-content: center;
-    margin-bottom: 25px;
-    flex-wrap: nowrap;
-}
-
-
-
-.modal-overlay {
-    position: fixed;
-    inset: 0; /* top:0; right:0; bottom:0; left:0 */
-    display: none;
-    justify-content: center;
-    align-items: center;
-    z-index: 999;
-    padding: 15px; /* espacio para que no choque en móviles */
-    background: rgba(20, 40, 80, 0.45);
-}
-.modal-card {
-    background: white;
-    padding: 30px 35px;
-    border-radius: 16px;
-    width: 400px;
-    max-width: 90%;
-    box-shadow: 0 20px 40px rgba(0,0,0,0.25);
-    animation: fadeIn 0.25s ease-out;
-    max-height: 90vh; /* evitar que sobrepase la pantalla */
-    overflow-y: auto; /* permitir scroll si es muy alto */
-    margin: auto;      /* asegura que se centre también vertical en overflow */
-}
-
-@keyframes fadeIn {
-    from { opacity: 0; transform: scale(0.9); }
-    to { opacity: 1; transform: scale(1); }
-}
-
-/* H2 dentro de cada tabla para Account ID y balance */
-#accountsContainer h2 {
-    color: #1a5fb4;
-    margin-bottom: 15px;
-    font-size: 22px;
-    text-align: left;
-}
-/* Form group en línea */
+/* Account selector group - inline layout */
 #AccSelector {
     display: flex;
-    align-items: center;   /* centra verticalmente label y select */
-    justify-content: center; /* centra el grupo en el contenedor */             
-    margin: 50px 0 15px 0; /* margen superior/inferior */
+    align-items: center;
+    justify-content: center;
+    margin: 50px 0 15px 0;
 }
 
 #AccSelector label {
-    white-space: nowrap; /* evita que el texto del label se rompa */
+    white-space: nowrap;
     font-weight: 600;
     color: #1a5fb4;
+    margin-right: 15px;
 }
 
 #AccSelector select {
-    flex: 0 1 200px;      /* ancho flexible: mínimo 0, máximo 200px */
+    flex: 0 1 200px;
     padding: 10px 12px;
     border-radius: 8px;
     border: 2px solid #c5d9ff;
@@ -795,37 +751,158 @@ input:focus {
     transition: all 0.3s;
 }
 
-#h5p-container{
+/* ===== BUTTON GROUP ===== */
+
+/* Container for action buttons - ORIGINAL STYLE */
+.button-group {
+    display: flex;
+    justify-content: center;
+    margin-top: 25px;
+}
+
+.button-group button {
+    margin: 0 7px;
+}
+
+/* ===== MODALS ===== */
+
+/* Base modal overlay - hidden by default */
+.modal,
+#movementModal,
+#undoModal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.5);
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+/* Modal content wrapper */
+.modal-content {
+    max-width: 400px;
+    width: 90%;
+    background: white;
+    padding: 30px 35px;
+    border-radius: 16px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.25);
+    animation: fadeIn 0.25s ease-out;
+    max-height: 90vh;
+    overflow-y: auto;
+    margin: auto;
+}
+
+/* Modal fade-in animation */
+@keyframes fadeIn {
+    from { 
+        opacity: 0; 
+        transform: scale(0.9); 
+    }
+    to { 
+        opacity: 1; 
+        transform: scale(1); 
+    }
+}
+
+/* Modal buttons spacing */
+#movementModal form .submit-btn,
+#undoModal form .submit-btn {
+    margin: 15px;
+}
+
+/* Undo modal submit button - red color */
+#undoModal form button[type="submit"] {
+    background: #e74c3c;
+    color: #fff;
+}
+
+/* Cancel button variant */
+.btn-cancel {
+    background: #e74c3c;
+}
+
+.btn-cancel:hover {
+    background: #c0392b;
+}
+
+/* ===== HELP VIDEO SECTION ===== */
+
+/* Help video container */
+.help-video-container,
+#h5p-container {
     display: flex; 
     flex-direction: column; 
     justify-content: center; 
     align-items: center;
-    
-}
-#h5p-container h1{
-    color: black;
+    margin: 40px auto;
+    text-align: center;
+    max-width: 640px;
+    padding: 20px;
 }
 
+#h5p-container h1 {
+    color: whitesmoke;
+    margin-bottom: 20px;
+    font-size: 1.8rem;
+}
 
-#h5p-container video{
+#h5p-container video,
+.help-video-container video {
+    margin-top: 10px;
     margin-bottom: 5vh;
-    
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
-/* For small screens */
-/* ===== MOVEMENTS MOBILE  ===== */
+
+/* ===== UTILITY CLASSES ===== */
+
+/* No movements message */
+#noMovementsMsg {
+    text-align: center;
+    font-size: 25px;
+    color: #555; 
+    display: none;
+}
+
+/* Accounts toolbar */
+.accounts-toolbar {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 25px;
+    flex-wrap: nowrap;
+}
+
+.accounts-toolbar button {
+    margin: 0 7px;
+}
+
+/* Table wrapper for horizontal scroll */
+.table-wrapper {
+    width: 100%;
+    margin-bottom: 30px;
+}
+
+
+
+/* ===== RESPONSIVE DESIGN - MOBILE ===== */
 
 @media (max-width: 768px) {
 
+    /* Table wrapper with horizontal scroll */
     #accountsContainer .table-wrapper {
-        overflow-x: auto;           /* Permite scroll horizontal */
-        -webkit-overflow-scrolling: touch; /* scroll suave en iOS */
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch; /* Smooth scroll on iOS */
         margin-bottom: 30px;
     }
 
     #accountsContainer .table-wrapper table {
         border-collapse: collapse;
         width: 100%;
-        min-width: 600px;          /* Evita que la tabla colapse demasiado */
+        min-width: 600px; /* Prevent table from collapsing too much */
     }
 
     #accountsContainer .table-wrapper th,
@@ -833,135 +910,35 @@ input:focus {
         border: 1px solid #ccc;
         padding: 8px;
         text-align: left;
-        white-space: nowrap;       /* evita que el texto se rompa */
+        white-space: nowrap;
     }
 
-
+    /* Narrower select on mobile */
     #AccSelector select {
-        flex: 0 1 5vh;      /* ancho flexible: mínimo 0, máximo 200px */
-
+        flex: 0 1 150px;
     }
 
-}
-
-
-  /*estilos del html */
-
-.confirm-actions {
-    margin-top: 12px;
-    display: flex;
-    gap: 10px;
-    justify-content: center;
-}
-
-#customersMsg {
-    display: none;
-    margin-top: 12px;
-}
-
-#formMsg {
-    display: none;
-    margin-bottom: 12px;
-}
-
-.form-actions {
-    margin-top: 10px;
-    display: flex;
-    gap: 10px;
-}
-
-#helpVideoModal .modal-content {
-    max-width: 900px;
-    width: 95%;
-}
-
-
-.help-modal-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-/* ===== RESPONSIVE TABLE → CARDS (customers) ===== */
-@media (max-width: 768px) {
-
-    .customers-page .table-responsive .Table thead {
-        display: none !important;
+    /* Stack buttons vertically on mobile */
+    .button-group {
+        flex-direction: column;
+        align-items: center;
     }
 
-    .customers-page .table-responsive .Table {
-        display: block !important;
-        table-layout: auto !important;
-        box-shadow: none !important;
-        border: none !important;
-        overflow: visible !important;
+    .button-group button {
+        width: 90%;
+        margin: 7px 0;
     }
 
-    .customers-page .table-responsive .Table tbody {
-        display: block !important;
+    /* Responsive video */
+    #h5p-container video,
+    .help-video-container video {
+        width: 100%;
+        height: auto;
     }
 
-    .customers-page .table-responsive .Table tbody tr {
-        display: block !important;
-        margin-bottom: 15px !important;
-        border: 1px solid #c5d9ff !important;
-        border-radius: 12px !important;
-        padding: 12px 15px !important;
-        background: rgba(255, 255, 255, 0.95) !important;
-        box-shadow: 0 4px 12px rgba(28, 113, 216, 0.1) !important;
-        height: auto !important;
-    }
-
-    .customers-page .table-responsive .Table tbody td,
-    .customers-page .table-responsive .Table tbody th[scope="row"] {
-        display: flex !important;
-        justify-content: space-between !important;
-        align-items: center !important;
-        padding: 8px 5px !important;
-        border: none !important;
-        border-bottom: 1px solid #eef2fa !important;
-        text-align: right !important;
-        white-space: normal !important;
-        word-break: break-word !important;
-        font-weight: normal !important;
-        background: transparent !important;
-        color: #333 !important;
-        width: 100% !important;
-        height: auto !important;
-    }
-
-    .customers-page .table-responsive .Table tbody tr td:last-child {
-        border-bottom: none !important;
-    }
-
-    .customers-page .table-responsive .Table tbody td::before,
-    .customers-page .table-responsive .Table tbody th[scope="row"]::before {
-        content: attr(data-label) !important;
-        display: inline-block !important;
-        font-weight: 700 !important;
-        color: #1a5fb4 !important;
-        text-align: left !important;
-        flex-shrink: 0 !important;
-        margin-right: 15px !important;
-        min-width: 120px !important;
-        font-size: 14px !important;
-    }
-
-    .customers-page .table-responsive .Table tbody td:last-child {
-        justify-content: center !important;
-        flex-wrap: wrap !important;
-        gap: 8px !important;
-    }
-
-    .customers-page .table-responsive .Table tbody td:last-child::before {
-        content: none !important;
-        display: none !important;
-    }
-
-    .customers-page .table-responsive .Table tbody td:last-child .submit-btn {
-        flex: 1;
-        min-width: 80px;
-        margin: 0 !important;
-        padding: 8px 12px !important;
-        font-size: 14px !important;
+    /* Modal content takes more width on mobile */
+    .modal-content {
+        width: 95%;
+        padding: 20px;
     }
 }
